@@ -1,0 +1,14 @@
+{
+  "name": "logistic-tanks",
+  "version": "0.0.0",
+  "title": "Logistic Tanks",
+  "author": "test447",
+  "dependencies": [
+    "base"
+  ],
+  "description": "Use logistic robots to transport fluids directly from tank to tank without any need for barreling.",
+  "factorio_version": "1.1",
+  "package": {
+    "ignore": [".git", ".github", ".vscode", ".kakrc"]
+  }
+}
