@@ -16,4 +16,14 @@ data:extend({
     default_value = true,
     order = "b"
   },
+  -- Runtime global
+  {
+    type = "int-setting",
+    name = "logistic-tanks-updates-per-tick",
+    setting_type = "runtime-global",
+    default_value = 10,
+    minimum_value = 1,
+    maximum_value = 100,
+    order = "c"
+},
 })

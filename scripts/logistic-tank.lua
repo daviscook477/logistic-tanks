@@ -20,6 +20,7 @@ for _, suffix in pairs(LogisticTank.suffixes) do
 end
 
 local fluid_per_item = settings.startup["logistic-tanks-fluid-per-item"].value
+local updates_per_tick = settings.global["logistic-tanks-updates-per-tick"].value
 
 function string.starts(str, start)
   return string.sub(str, 1 ,string.len(start)) == start
@@ -91,6 +92,8 @@ function LogisticTank.on_entity_created(event)
     }
   end
   logistic_storage_tank.chest.destructible = false
+
+  LogisticTank.enqueue_processing(entity.unit_number)
 end
 script.on_event(defines.events.on_entity_cloned, LogisticTank.on_entity_created, LogisticTank.filters)
 script.on_event(defines.events.on_built_entity, LogisticTank.on_entity_created, LogisticTank.filters)
@@ -198,10 +201,27 @@ function LogisticTank.equalize_inventory(logistic_storage_tank)
   end
 end
 
+function LogisticTank.enqueue_processing(unit_number)
+  if Queue.is_empty(global.logistic_storage_tanks_update_queue) then
+    Queue.push_right(global.logistic_storage_tanks_update_queue, {unit_number})
+  else
+    local tail = Queue.tail(global.logistic_storage_tanks_update_queue)
+    if #tail.value > updates_per_tick then
+      Queue.push_right(global.logistic_storage_tanks_update_queue, {unit_number})
+    else
+      table.insert(tail.value, unit_number)
+    end
+  end
+end
+
 function LogisticTank.on_tick(event)
-  for _, logistic_storage_tank in pairs(global.logistic_storage_tanks) do
-    if (event.tick + logistic_storage_tank.unit_number) % 60 == 0 then
+  if Queue.is_empty(global.logistic_storage_tanks_update_queue) then return end
+  local process_this_tick = Queue.pop_left(global.logistic_storage_tanks_update_queue)
+  for _, unit_number in pairs(process_this_tick) do
+    local logistic_storage_tank = global.logistic_storage_tanks[unit_number]
+    if logistic_storage_tank then
       LogisticTank.equalize_inventory(logistic_storage_tank)
+      LogisticTank.enqueue_processing(unit_number)
     end
   end
 end
@@ -209,6 +229,7 @@ script.on_event(defines.events.on_tick, LogisticTank.on_tick)
 
 function LogisticTank.on_init(event)
   global.logistic_storage_tanks = {}
+  global.logistic_storage_tanks_update_queue = Queue.new()
 end
 script.on_init(LogisticTank.on_init)
 

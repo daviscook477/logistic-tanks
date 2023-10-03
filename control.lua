@@ -1,5 +1,6 @@
 fluid_equivalent_prefix = "fluid-equivalent-"
 
+Queue = require("scripts/queue")
 LogisticTank = require("scripts/logistic-tank")
 LogisticTankGUI = require("scripts/logistic-tank-gui")
 LogisticTankCopy = require("scripts/logistic-tank-copy")

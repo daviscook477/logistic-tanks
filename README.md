@@ -38,14 +38,9 @@ Connect storage tanks to the logistics network so robots can move fluids around 
 # TODO
 1. Popup GUI for selecting the fluid + amount (should essentially just be the popup for setting a normal logistic request but w/o the tabs since we only want fluids)
 3. 1x1 tanks + sprite mask/highlight for them - I don't really like the 1x1 tank that exists on the mod portal. Do I need to make my own 1x1 tank as well for this to work?
-4. Change over to a linked list of arrays so we can process X updates per tick rather than having to always process all of the updates
-5. Introduce a setting for whether barrels should be in the recipes. Also have the # of updates per tick be a setting as well.
 6. Technology icon (256x256) - idea: use the fluid handling icon with a requster tint over the appropriate portion with the logistic robot from the logistic robot tech flying out of it
 7. graphics patch for 3x3 tanks (animation on the logistic chest) some sort of camera lens collapsing animation integrated as a patch on the top if possible
 8. when the tank is mined, use the pre-mine event to try to push not just the fluid in the real tank, but also the fluid in the chest as well out into the connected fluid network
-
-# BUGS
-2. Why does removing the tank leave the chest in place
 
 # MAYBE
 1. Use a different force logistic network so the tanks don't cross with the chests - this allows active provider, buffer, and storage to exist

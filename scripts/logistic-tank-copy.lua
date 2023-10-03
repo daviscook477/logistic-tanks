@@ -58,7 +58,6 @@ function LogisticTankCopy.on_entity_settings_pasted_assembling_machine(event)
       local request_paste_multiplier = recipe_prototype.request_paste_multiplier
       local time_per_craft = recipe_prototype.energy / event.source.crafting_speed
       local paste_amount = math.floor(fluid_per_craft * request_paste_multiplier / time_per_craft)
-      game.print(paste_amount)
       table.insert(pastes, {
         paste_type = ingredient.name,
         paste_amount = paste_amount
