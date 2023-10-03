@@ -36,8 +36,7 @@ Connect storage tanks to the logistics network so robots can move fluids around 
 
 # TODO
 1. Popup GUI for selecting the fluid + amount (should essentially just be the popup for setting a normal logistic request but w/o the tabs since we only want liquids)
-2. Copy/paste between assembling machines and the requester tank
-3. 1x1 tanks + sprite mask/highlight for them
+3. 1x1 tanks + sprite mask/highlight for them - I don't really like the 1x1 tank that exists on the mod portal. Do I need to make my own 1x1 tank as well for this to work?
 4. Change over to a linked list of arrays so we can process X updates per tick rather than having to always process all of the updates
 5. Introduce a setting for whether barrels should be in the recipes. Also have the # of updates per tick be a setting as well.
 6. Technology icon (256x256) - idea: use the fluid handling icon with a requster tint over the appropriate portion with the logistic robot from the logistic robot tech flying out of it

@@ -134,7 +134,8 @@ function LogisticTank.update_request(logistic_storage_tank)
     -- no implementation
   elseif logistic_point.mode == defines.logistic_mode.requester or logistic_point.mode == defines.logistic_mode.buffer then
     if logistic_storage_tank.fluid_type and logistic_storage_tank.request_amount > 0 then
-      chest.set_request_slot({name = fluid_equivalent_prefix..logistic_storage_tank.fluid_type, count = logistic_storage_tank.request_amount/50} , 1)
+      local equivalent_amount = math.max(1, logistic_storage_tank.request_amount/50)
+      chest.set_request_slot({name = fluid_equivalent_prefix..logistic_storage_tank.fluid_type, count = equivalent_amount} , 1)
     else
       chest.clear_request_slot(1)
     end
@@ -193,45 +194,6 @@ function LogisticTank.equalize_inventory(logistic_storage_tank)
     inventory.remove({ name = fluid_equivalent_prefix..logistic_storage_tank.fluid_type, count = -delta_item_count })
   end
 end
-
-function LogisticTank.serialize(entity)
-  local logistic_storage_tank = LogisticTank.from_entity(entity)
-  if not logistic_storage_tank then return end
-  local tags = {}
-  tags.fluid_type = logistic_storage_tank.fluid_type
-  tags.request_amount = logistic_storage_tank.request_amount
-  return tags
-end
-
-function LogisticTank.deserialize(entity, tags)
-  local logistic_storage_tank = LogisticTank.from_entity(entity)
-  if not logistic_storage_tank then return end
-  logistic_storage_tank.request_amount = tags.request_amount
-  local main = logistic_storage_tank.main
-  if not (main and main.valid) then return LogisticTank.destroy(logistic_storage_tank) end
-  local fluid_boxes = main.fluidbox
-  local fluid_box = fluid_boxes[1]
-  if not fluid_box then
-    logistic_storage_tank.fluid_type = tags.fluid_type
-  elseif fluid_box.fluid_type ~= tags.fluid_type then
-    -- flying text
-  else
-    -- filters are already the same - noop
-  end
-  LogisticTank.update_request(logistic_storage_tank)
-end
-
---- Handles both copying settings between requester tanks and copying
---- from assembly machines to requester tanks
-function LogisticTank.on_entity_settings_pasted(event)
-  if not (event.source and event.source.valid and event.destination and event.destination.valid) then return end
-  if not (event.source.name == LogisticTank.prefix_tank.."requester" and event.destination.name == LogisticTank.prefix_tank.."requester") then return end
-  local tags = LogisticTank.serialize(event.source)
-  if tags then
-    LogisticTank.deserialize(event.destination, tags)
-  end
-end
-script.on_event(defines.events.on_entity_settings_pasted, LogisticTank.on_entity_settings_pasted)
 
 function LogisticTank.on_tick(event)
   for _, logistic_storage_tank in pairs(global.logistic_storage_tanks) do

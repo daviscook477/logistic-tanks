@@ -1,0 +1,1 @@
+require("prototypes/phase-2/copy-paste")

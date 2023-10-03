@@ -2,6 +2,7 @@ fluid_equivalent_prefix = "fluid-equivalent-"
 
 LogisticTank = require("scripts/logistic-tank")
 LogisticTankGUI = require("scripts/logistic-tank-gui")
+LogisticTankCopy = require("scripts/logistic-tank-copy")
 
 --- The item equivalents used for transporting liquids with logistic robots are an implentation detail and the
 --- player should not be able to interact with them - however if a logistic robot carrying one of these item
