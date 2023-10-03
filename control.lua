@@ -1,11 +1,11 @@
 local fns = {}
 
+local fluid_equivalent_prefix = "fluid-equivalent-"
 local name_tank_passive_provider = "logistic-storage-tank-passive-provider"
 local name_chest_passive_provider = "logistic-storage-tank-logistic-chest-passive-provider"
 local name_tank_requester = "logistic-storage-tank-requester"
 local name_chest_requester = "logistic-storage-tank-logistic-chest-requester"
 local name_gui_root = "logistic-storage-tank-filter"
-local tick_update = 6
 
 local chest_map = {
   [name_tank_passive_provider] = name_chest_passive_provider,
@@ -13,6 +13,10 @@ local chest_map = {
 }
 
 local filters = {{filter = "name", name = name_tank_passive_provider}, {filter = "name", name = name_tank_requester}}
+
+function string.starts(str, start)
+  return string.sub(str, 1 ,string.len(start)) == start
+end
 
 function fns.from_unit_number(unit_number)
   if not unit_number then return end
@@ -118,7 +122,6 @@ function fns.equalize_inventory(logistic_storage_tank)
   if not (main and main.valid) then return fns.destroy(logistic_storage_tank) end
   local chest = logistic_storage_tank.chest
   if not (chest and chest.valid) then return fns.destroy(logistic_storage_tank) end
-  
   local fluid_boxes = main.fluidbox
   local fluid_box = fluid_boxes[1]
   local fluid_count = 0
@@ -126,43 +129,75 @@ function fns.equalize_inventory(logistic_storage_tank)
     fluid_count = fluid_count + fluid_box.amount
     logistic_storage_tank.fluid_type = fluid_box.name
   end
-
   local inventory = chest.get_inventory(defines.inventory.chest)
   local item_count = 0
   if logistic_storage_tank.fluid_type then
-    item_count = inventory.get_item_count(logistic_storage_tank.fluid_type .. "-barrel")
+    item_count = inventory.get_item_count(fluid_equivalent_prefix..logistic_storage_tank.fluid_type)
   end
+  local equivalent_item_count = item_count * 50
 
-  local delta_item_count = item_count - logistic_storage_tank.last_item_count
-  if delta_item_count ~= 0 then
-    fluid_count = fluid_count + (delta_item_count * 50)
-    if fluid_count <= 0 then
-      fluid_boxes[1] = nil
-    elseif fluid_box then
-      fluid_box.amount = fluid_count
+  local total_count = fluid_count + equivalent_item_count
+  local average_count = total_count / 2
+
+  local new_item_count = math.floor(average_count / 50)
+  local new_equivalent_item_count = new_item_count * 50
+  local new_fluid_count = total_count - new_equivalent_item_count
+  if fluid_box then
+    if new_fluid_count > 0 then
+      fluid_box.amount = new_fluid_count
       fluid_boxes[1] = fluid_box
-    elseif logistic_storage_tank.fluid_type then
+    else
+      fluid_boxes[1] = nil
+    end
+  elseif logistic_storage_tank.fluid_type then
+    if new_fluid_count > 0 then
       fluid_boxes[1] = {
         name = logistic_storage_tank.fluid_type,
-        amount = fluid_count
+        amount = new_fluid_count
       }
+    else
+      fluid_boxes[1] = nil
     end
+  else
+    return
   end
-  local delta = math.floor(fluid_count / 50) - item_count
-  if delta > 0 then
-    inventory.insert({ name = logistic_storage_tank.fluid_type .. "-barrel", count = delta })
-  elseif delta < 0 then
-    inventory.remove({ name = logistic_storage_tank.fluid_type .. "-barrel", count = -delta })
+
+  local delta_item_count = new_item_count - item_count
+  if delta_item_count > 0 then
+    inventory.insert({ name = fluid_equivalent_prefix..logistic_storage_tank.fluid_type, count = delta_item_count })
+  elseif delta_item_count < 0 then
+    inventory.remove({ name = fluid_equivalent_prefix..logistic_storage_tank.fluid_type, count = -delta_item_count })
   end
-  logistic_storage_tank.last_item_count = item_count + delta
 end
 
-function fns.on_tick()
+function fns.on_tick(event)
   for _, logistic_storage_tank in pairs(global.logistic_storage_tanks) do
-    fns.equalize_inventory(logistic_storage_tank)
+    if (event.tick + logistic_storage_tank.unit_number) % 60 == 0 then
+      fns.equalize_inventory(logistic_storage_tank)
+    end
   end
 end
-script.on_nth_tick(tick_update, fns.on_tick)
+script.on_event(defines.events.on_tick, fns.on_tick)
+
+--- The item equivalents used for transporting liquids with logistic robots are an implentation detail and the
+--- player should not be able to interact with them - however if a logistic robot carrying one of these item
+--- equivalents is mined, the item equivalent it was carrying will end up being visible to the player.
+--- When this happens, search through the inventory of the mining player and remove the item equivalent.
+function fns.on_player_mined_entity(event)
+  -- clear the inventory of any item equivalents
+  local player = game.players[event.player_index]
+  local main_inventory = player.get_main_inventory()
+  if not (main_inventory and main_inventory.valid) then return end
+  for i = 1, #main_inventory do
+    local item_stack = main_inventory[i]
+    if item_stack.valid_for_read and string.starts(item_stack.name, fluid_equivalent_prefix) then
+      main_inventory.remove(item_stack.name)
+    end
+  end
+end
+--- Only the on_player_mined_entity is relevant for this concern, because on_robot_mined_entity will never be fired
+--- since logistic robots are incapable of being marked for deconstruction.
+script.on_event(defines.events.on_player_mined_entity, fns.on_player_mined_entity, {{filter="robot-with-logistics-interface"}})
 
 function fns.on_init(event)
   global.logistic_storage_tanks = {}
@@ -222,7 +257,7 @@ function fns.update_request(logistic_storage_tank)
     
   elseif logistic_point.mode == defines.logistic_mode.requester or logistic_point.mode == defines.logistic_mode.buffer then
     if logistic_storage_tank.fluid_type and logistic_storage_tank.request_amount > 0 then
-      chest.set_request_slot({name = logistic_storage_tank.fluid_type.."-barrel", count = logistic_storage_tank.request_amount/50} , 1)
+      chest.set_request_slot({name = fluid_equivalent_prefix..logistic_storage_tank.fluid_type, count = logistic_storage_tank.request_amount/50} , 1)
     else
       chest.clear_request_slot(1)
     end
@@ -246,7 +281,7 @@ function fns.on_gui_elem_changed(event)
   local fluid_box = fluid_boxes[1]
   if not fluid_box then
     logistic_storage_tank.fluid_type = event.element.elem_value
-  elseif logistic_storage_tank.fluid_type ~= main.fluid_box.name then
+  elseif logistic_storage_tank.fluid_type ~= fluid_box.name then
     player.print({"logistic-tanks.cannot-switch-filter"})
   end
   fns.update_request(logistic_storage_tank)
