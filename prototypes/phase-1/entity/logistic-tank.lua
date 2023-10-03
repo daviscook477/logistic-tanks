@@ -188,7 +188,7 @@ end
 function fns.make_logistic_storage_tank_chest(name)
   local logistic_tank_storage_chest =  fns.deepcopy(data.raw["logistic-container"]["logistic-chest-"..name])
   logistic_tank_storage_chest.name = "logistic-storage-tank-logistic-chest-"..name
-  -- 50 fluid per barrel * 50 slots * 10 barrels per slot = 25k equivalent to storage tank (51 slots is 1 greater than 50 to allow for some slight overflow)
+  -- 500 fluid per slot * 50 slots = 25k equivalent to storage tank (51 slots is 1 greater than 50 to allow for some slight overflow)
   logistic_tank_storage_chest.inventory_size = 51
   logistic_tank_storage_chest.animation =
   -- not visible

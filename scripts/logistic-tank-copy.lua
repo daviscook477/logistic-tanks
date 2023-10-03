@@ -46,6 +46,7 @@ end
 ---Handles copying settings between requester tanks and assembly machines
 ---@param event EventData.on_entity_settings_pasted Event data
 function LogisticTankCopy.on_entity_settings_pasted_assembling_machine(event)
+  if game.entity_prototypes[event.source.name].type ~= "assembling-machine" then return end
   local recipe = event.source.get_recipe()
   if not (recipe and recipe.ingredients) then return end
   local recipe_prototype = game.recipe_prototypes[recipe.name]

@@ -1,3 +1,6 @@
+-- This behavior can be disabled with a startup setting
+if not settings.startup["logistic-tanks-robots-require-barrel"].value then return end
+
 local fns = {}
 
 function fns.table_contains(table, target)

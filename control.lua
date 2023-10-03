@@ -4,6 +4,20 @@ LogisticTank = require("scripts/logistic-tank")
 LogisticTankGUI = require("scripts/logistic-tank-gui")
 LogisticTankCopy = require("scripts/logistic-tank-copy")
 
+local fns = {}
+
+function fns.deepcopy(table)
+  local new_table = {}
+  for k, v in pairs(table) do
+    if type(v) == "table" then
+      new_table[k] = fns.deepcopy(v)
+    else
+      new_table[k] = v
+    end
+  end
+  return new_table
+end
+
 --- The item equivalents used for transporting liquids with logistic robots are an implentation detail and the
 --- player should not be able to interact with them - however if a logistic robot carrying one of these item
 --- equivalents is mined, the item equivalent it was carrying will end up being visible to the player.
@@ -19,7 +33,11 @@ function on_player_mined_entity(event)
       main_inventory.remove(item_stack.name)
     end
   end
+  -- forward the event to on_entity_destroyed
+  LogisticTank.on_entity_destroyed(event)
 end
 --- Only the on_player_mined_entity is relevant for this concern, because on_robot_mined_entity will never be fired
 --- since logistic robots are incapable of being marked for deconstruction.
-script.on_event(defines.events.on_player_mined_entity, on_player_mined_entity, {{filter="robot-with-logistics-interface"}})
+local on_player_mined_entity_filter = fns.deepcopy(LogisticTank.filters)
+table.insert(on_player_mined_entity_filter, {filter="robot-with-logistics-interface"})
+script.on_event(defines.events.on_player_mined_entity, on_player_mined_entity, on_player_mined_entity_filter)

@@ -19,6 +19,8 @@ for _, suffix in pairs(LogisticTank.suffixes) do
   table.insert(LogisticTank.logistic_storage_tank_chest_names, logistic_storage_tank_chest_name)
 end
 
+local fluid_per_item = settings.startup["logistic-tanks-fluid-per-item"].value
+
 function string.starts(str, start)
   return string.sub(str, 1 ,string.len(start)) == start
 end
@@ -80,7 +82,7 @@ function LogisticTank.on_entity_created(event)
 
   global.logistic_storage_tanks[entity.unit_number] = logistic_storage_tank
 
-  logistic_storage_tank.chest = LogisticTank.find_entity_or_revive_ghost(entity.surface, LogisticTank.logistic_storage_tank_chest_names, entity.position)
+  logistic_storage_tank.chest = LogisticTank.find_entity_or_revive_ghost(entity.surface, LogisticTank.chest_map[entity.name], entity.position)
   if not logistic_storage_tank.chest then
     logistic_storage_tank.chest = entity.surface.create_entity{
       name = LogisticTank.chest_map[entity.name],
@@ -117,9 +119,10 @@ function LogisticTank.on_entity_destroyed(event)
 
   LogisticTank.destroy(LogisticTank.from_entity(entity))
 end
+-- on_player_mined_entity is missing from this registration since we need additional custom logic
+-- for that event defined in control - the handler in control passes through to this one
 script.on_event(defines.events.on_entity_died, LogisticTank.on_entity_destroyed, LogisticTank.filters)
 script.on_event(defines.events.on_robot_mined_entity, LogisticTank.on_entity_destroyed, LogisticTank.filters)
-script.on_event(defines.events.on_player_mined_entity, LogisticTank.on_entity_destroyed, LogisticTank.filters)
 script.on_event(defines.events.script_raised_destroy, LogisticTank.on_entity_destroyed, LogisticTank.filters)
 
 function LogisticTank.update_request(logistic_storage_tank)
@@ -134,8 +137,8 @@ function LogisticTank.update_request(logistic_storage_tank)
     -- no implementation
   elseif logistic_point.mode == defines.logistic_mode.requester or logistic_point.mode == defines.logistic_mode.buffer then
     if logistic_storage_tank.fluid_type and logistic_storage_tank.request_amount > 0 then
-      local equivalent_amount = math.max(1, logistic_storage_tank.request_amount/50)
-      chest.set_request_slot({name = fluid_equivalent_prefix..logistic_storage_tank.fluid_type, count = equivalent_amount} , 1)
+      local equiavlent_request_amount = math.max(1, logistic_storage_tank.request_amount / fluid_per_item)
+      chest.set_request_slot({name = fluid_equivalent_prefix..logistic_storage_tank.fluid_type, count = equiavlent_request_amount} , 1)
     else
       chest.clear_request_slot(1)
     end
@@ -159,13 +162,13 @@ function LogisticTank.equalize_inventory(logistic_storage_tank)
   if logistic_storage_tank.fluid_type then
     item_count = inventory.get_item_count(fluid_equivalent_prefix..logistic_storage_tank.fluid_type)
   end
-  local equivalent_item_count = item_count * 50
+  local equivalent_item_count = item_count * fluid_per_item
 
   local total_count = fluid_count + equivalent_item_count
   local average_count = total_count / 2
 
-  local new_item_count = math.floor(average_count / 50)
-  local new_equivalent_item_count = new_item_count * 50
+  local new_item_count = math.floor(average_count / fluid_per_item)
+  local new_equivalent_item_count = new_item_count * fluid_per_item
   local new_fluid_count = total_count - new_equivalent_item_count
   if fluid_box then
     if new_fluid_count > 0 then
