@@ -3,8 +3,7 @@ data:extend({
     type = "technology",
     name = "logistic-fluids",
     icon_size = 256,
-    icon_mipmaps = 4,
-    icon = "__base__/graphics/technology/logistic-system.png",
+    icon = "__logistic-tanks__/graphics/technology/logistic-storage-tank.png",
     effects = {
       --{ type = "unlock-recipe", recipe = "logistic-storage-tank-active-provider"},
       { type = "unlock-recipe", recipe = "logistic-storage-tank-passive-provider"},
@@ -12,7 +11,7 @@ data:extend({
       --{ type = "unlock-recipe", recipe = "logistic-storage-tank-buffer"},
       { type = "unlock-recipe", recipe = "logistic-storage-tank-requester"},
     },
-    prerequisites = { "utility-science-pack","logistic-robotics" },
+    prerequisites = { "logistic-system" },
     unit = {
       count = 500,
       ingredients =
