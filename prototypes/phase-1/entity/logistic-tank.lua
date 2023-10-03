@@ -21,6 +21,8 @@ local blank = {
   priority = "low"
 }
 
+local fast_replace_group = "storage-tank"
+
 function fns.make_logistic_storage_tank_entity(name, tint)
   local logistic_tank_storage_entity = fns.deepcopy(data.raw["storage-tank"]["storage-tank"])
   logistic_tank_storage_entity.name = "logistic-storage-tank-"..name
@@ -106,6 +108,7 @@ function fns.make_logistic_storage_tank_entity(name, tint)
     }
   }
   logistic_tank_storage_entity.corpse = "logistic-storage-tank-"..name.."-remnants"
+  logistic_tank_storage_entity.fast_replaceable_group = "storage-tank"
   return logistic_tank_storage_entity
 end
 
@@ -217,3 +220,5 @@ data:extend(fns.make_logistic_storage_tank("passive-provider", logistic_tanks.ti
 --data:extend(fns.make_logistic_storage_tank("storage", logistic_tanks.tint_logistic_storage_tank_storage))
 --data:extend(fns.make_logistic_storage_tank("buffer", logistic_tanks.tint_logistic_storage_tank_buffer))
 data:extend(fns.make_logistic_storage_tank("requester", logistic_tanks.tint_logistic_storage_tank_requester))
+
+data.raw["storage-tank"]["storage-tank"].fast_replaceable_group = fast_replace_group
