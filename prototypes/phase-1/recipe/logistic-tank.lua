@@ -8,8 +8,8 @@ function fns.make_logistic_storage_tank_recipe(name)
     ingredients =
     {
       {"storage-tank", 1},
-      {"electronic-circuit", 3},
-      {"advanced-circuit", 1}
+      {"advanced-circuit", 3},
+      {"processing-unit", 1}
     },
     result = "logistic-storage-tank-"..name,
   }

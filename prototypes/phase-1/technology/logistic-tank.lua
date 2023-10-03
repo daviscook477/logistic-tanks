@@ -10,6 +10,11 @@ data:extend({
       --{ type = "unlock-recipe", recipe = "logistic-storage-tank-storage"},
       --{ type = "unlock-recipe", recipe = "logistic-storage-tank-buffer"},
       { type = "unlock-recipe", recipe = "logistic-storage-tank-requester"},
+      --{ type = "unlock-recipe", recipe = "minibuffer-active-provider"},
+      { type = "unlock-recipe", recipe = "minibuffer-passive-provider"},
+      --{ type = "unlock-recipe", recipe = "minibuffer-storage"},
+      --{ type = "unlock-recipe", recipe = "minibuffer-buffer"},
+      { type = "unlock-recipe", recipe = "minibuffer-requester"},
     },
     prerequisites = { "logistic-system" },
     unit = {

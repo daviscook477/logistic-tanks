@@ -109,6 +109,7 @@ function fns.make_logistic_storage_tank_entity(name, tint)
   }
   logistic_tank_storage_entity.corpse = "logistic-storage-tank-"..name.."-remnants"
   logistic_tank_storage_entity.fast_replaceable_group = "storage-tank"
+  logistic_tank_storage_entity.minable.result = "logistic-storage-tank-"..name
   return logistic_tank_storage_entity
 end
 
@@ -222,7 +223,7 @@ data:extend(fns.make_logistic_storage_tank("passive-provider", logistic_tanks.ti
 
 local logistic_storage_tank_requester = fns.make_logistic_storage_tank("requester", logistic_tanks.tint_logistic_storage_tank_requester)
 -- Allow copy/paste requests between requester tanks using the on_entity_settings_pasted event
-logistic_storage_tank_requester[2].additional_pastable_entities = { "logistic-storage-tank-requester" }
+logistic_storage_tank_requester[2].additional_pastable_entities = { "logistic-storage-tank-requester", "minibuffer-requester" }
 data:extend(logistic_storage_tank_requester)
 
 data.raw["storage-tank"]["storage-tank"].fast_replaceable_group = fast_replace_group

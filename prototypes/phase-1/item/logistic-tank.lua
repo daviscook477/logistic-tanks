@@ -8,7 +8,7 @@ function fns.make_logistic_storage_tank_item(name, order, tint)
     {
       -- Base
       {
-        icon = "__logistic-tanks__/graphics/icons/logistic-tank/storage-tank-icon-base.png",
+        icon = "__base__/graphics/icons/storage-tank.png",
         icon_size = 64,
         icon_mipmaps = 4,
       },
