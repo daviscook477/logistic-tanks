@@ -219,6 +219,10 @@ end
 data:extend(fns.make_logistic_storage_tank("passive-provider", logistic_tanks.tint_logistic_storage_tank_passive_provider))
 --data:extend(fns.make_logistic_storage_tank("storage", logistic_tanks.tint_logistic_storage_tank_storage))
 --data:extend(fns.make_logistic_storage_tank("buffer", logistic_tanks.tint_logistic_storage_tank_buffer))
-data:extend(fns.make_logistic_storage_tank("requester", logistic_tanks.tint_logistic_storage_tank_requester))
+
+local logistic_storage_tank_requester = fns.make_logistic_storage_tank("requester", logistic_tanks.tint_logistic_storage_tank_requester)
+-- Allow copy/paste requests between requester tanks using the on_entity_settings_pasted event
+logistic_storage_tank_requester[2].additional_pastable_entities = { "logistic-storage-tank-requester" }
+data:extend(logistic_storage_tank_requester)
 
 data.raw["storage-tank"]["storage-tank"].fast_replaceable_group = fast_replace_group

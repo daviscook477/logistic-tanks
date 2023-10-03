@@ -66,8 +66,10 @@ function LogisticTankGUI.on_gui_elem_changed(event)
   local fluid_box = fluid_boxes[1]
   if not fluid_box then
     logistic_storage_tank.fluid_type = event.element.elem_value
-  elseif logistic_storage_tank.fluid_type ~= fluid_box.name then
+  elseif fluid_box.fluid_type ~= event.element.elem_value then
     player.print({"logistic-tanks.cannot-switch-filter"})
+  else
+    -- filters are already the same - noop
   end
   LogisticTank.update_request(logistic_storage_tank)
 end
