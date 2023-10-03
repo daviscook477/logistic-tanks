@@ -30,7 +30,6 @@ function LogisticTankGUI.gui_open(player, logistic_storage_tank)
   title_flow.add{type = "label", name = "title-label", style = "frame_title", caption = {"logistic-tanks.relative-window-title"}, ignored_by_interaction = true}
   local title_empty = title_flow.add{
     type = "empty-widget",
-    style = "draggable_space",
     ignored_by_interaction = true
   }
   title_empty.style.horizontally_stretchable = "on"
@@ -40,11 +39,48 @@ function LogisticTankGUI.gui_open(player, logistic_storage_tank)
 
   local gui_inner = container.add{type="frame", name="gui_inner", direction="vertical", style="b_inner_frame"}
   gui_inner.style.padding = 10
-  gui_inner.style.horizontally_stretchable = "on"
 
-  local selector = gui_inner.add{type="choose-elem-button", name="selector", elem_type="fluid"}
+  local gui_flow = gui_inner.add{type="flow", name="gui_flow", direction="horizontal"}
+  gui_flow.style.horizontally_stretchable = "on"
+  gui_flow.style.vertical_align = "center"
 
-  local slider = gui_inner.add{type="slider", name="slider", minimum_value = 0, maximum_value = 25000, value = 2500, value_step = 2500, discrete_slider = true, style="notched_slider"}
+  local fluid_count = 0
+  local main = logistic_storage_tank.main
+  if main and main.valid then
+    local fluid_box = main.fluidbox[1]
+    if fluid_box then
+      fluid_count = fluid_count + fluid_box.amount
+    end
+  end
+  fluid_count = math.floor(fluid_count)
+  local tooltip = nil
+  if logistic_storage_tank.fluid_type then
+    tooltip={"logistic-tanks.filter-tooltip", {"fluid-name."..logistic_storage_tank.fluid_type}, {"description.logistic-request-tooltip-satisfaction"}, fluid_count, logistic_storage_tank.request_amount}
+  end
+  local number = nil
+  if logistic_storage_tank.request_amount > 0 then
+    number = logistic_storage_tank.request_amount
+  end
+  local selector = gui_flow.add{
+    type="sprite-button",
+    name="selector-button",
+    sprite="fluid/petroleum-gas",
+    number=number,
+    tooltip=tooltip,
+  }
+  local spacer = gui_flow.add{
+    type="empty-widget"
+  }
+  spacer.style.horizontally_stretchable = "on"
+  if fluid_count > 0 then
+    local button = gui_flow.add{
+      type="sprite-button",
+      name="flush-button",
+      style="tool_button_red",
+      sprite="utility/trash",
+      tooltip={"logistic-tanks.flush-tooltip", {"fluid-name.petroleum-gas"}},
+    }
+  end
 
   LogisticTankGUI.gui_update(player)
 end
@@ -125,8 +161,16 @@ function LogisticTankGUI.gui_update(player)
   local logistic_storage_tank = LogisticTank.from_unit_number(root.tags.unit_number)
   if not logistic_storage_tank then return end
 
-  root["gui_inner"]["selector"].elem_value = logistic_storage_tank.fluid_type
-  root["gui_inner"]["slider"].slider_value = logistic_storage_tank.request_amount
+  if logistic_storage_tank.fluid_type then
+    root["gui_inner"]["gui_flow"]["selector-button"].sprite = "fluid/"..logistic_storage_tank.fluid_type
+  else
+    root["gui_inner"]["gui_flow"]["selector-button"].sprite = nil
+  end
+  if logistic_storage_tank.request_amount and logistic_storage_tank.request_amount > 0 then
+    root["gui_inner"]["gui_flow"]["selector-button"].number = logistic_storage_tank.request_amount
+  else
+    root["gui_inner"]["gui_flow"]["selector-button"].number = nil
+  end
 end
 
 return LogisticTankGUI

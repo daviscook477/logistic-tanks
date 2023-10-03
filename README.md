@@ -33,3 +33,21 @@ Connect storage tanks to the logistics network so robots can move fluids around 
     - This has the caveat of making each logistic tank capable of storing twice the fluid as a typical storage tank since it has both its fluid storage and the chest storage.
 3. Small relative GUI for the interactible storage tank that lets the player pick the filter/request.
     - Interactions with this GUI are propagated to the internal logistic chest.
+
+# TODO
+1. Popup GUI for selecting the fluid + amount (should essentially just be the popup for setting a normal logistic request but w/o the tabs since we only want liquids)
+2. Copy/paste between assembling machines and the requester tank
+3. 1x1 tanks + sprite mask/highlight for them
+4. Change over to a linked list of arrays so we can process X updates per tick rather than having to always process all of the updates
+5. Introduce a setting for whether barrels should be in the recipes. Also have the # of updates per tick be a setting as well.
+6. Technology icon (256x256) - idea: use the fluid handling icon with a requster tint over the appropriate portion with the logistic robot from the logistic robot tech flying out of it
+7. graphics patch for 3x3 tanks (animation on the logistic chest) some sort of camera lens collapsing animation integrated as a patch on the top if possible
+8. when the tank is mined, use the pre-mine event to try to push not just the fluid in the real tank, but also the fluid in the chest as well out into the connected fluid network
+
+# BUGS
+1. Why does fast replacing requester with passive provider and vice versa cause them to be deleted
+2. Why does removing the tank leave the chest in place
+
+# MAYBE
+1. Use a different force logistic network so the tanks don't cross with the chests - this allows active provider, buffer, and storage to exist
+   - This can also introduce a different logistics robot specifically for transferring liquids - the only problem is that I'd essentially have to turn every roboport into two roboports and the liquid logistic robots wouldn't be accessible from the inventory of the main roboport - really not ideal
