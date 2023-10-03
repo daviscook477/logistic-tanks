@@ -6,10 +6,10 @@ data:extend({
     icon_mipmaps = 4,
     icon = "__base__/graphics/technology/logistic-system.png",
     effects = {
-      { type = "unlock-recipe", recipe = "logistic-storage-tank-active-provider"},
+      --{ type = "unlock-recipe", recipe = "logistic-storage-tank-active-provider"},
       { type = "unlock-recipe", recipe = "logistic-storage-tank-passive-provider"},
-      { type = "unlock-recipe", recipe = "logistic-storage-tank-storage"},
-      { type = "unlock-recipe", recipe = "logistic-storage-tank-buffer"},
+      --{ type = "unlock-recipe", recipe = "logistic-storage-tank-storage"},
+      --{ type = "unlock-recipe", recipe = "logistic-storage-tank-buffer"},
       { type = "unlock-recipe", recipe = "logistic-storage-tank-requester"},
     },
     prerequisites = { "utility-science-pack","logistic-robotics" },

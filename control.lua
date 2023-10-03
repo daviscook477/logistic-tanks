@@ -1,18 +1,32 @@
 local fns = {}
 
 local fluid_equivalent_prefix = "fluid-equivalent-"
-local name_tank_passive_provider = "logistic-storage-tank-passive-provider"
-local name_chest_passive_provider = "logistic-storage-tank-logistic-chest-passive-provider"
-local name_tank_requester = "logistic-storage-tank-requester"
-local name_chest_requester = "logistic-storage-tank-logistic-chest-requester"
+
+local prefix_tank = "logistic-storage-tank-"
+local prefix_chest = "logistic-storage-tank-logistic-chest-"
+local suffixes = { "active-provider", "passive-provider", "storage", "buffer", "requester" }
+local suffixes_request = { "storage", "buffer", "requester" }
 local name_gui_root = "logistic-storage-tank-filter"
 
-local chest_map = {
-  [name_tank_passive_provider] = name_chest_passive_provider,
-  [name_tank_requester] = name_chest_requester
-}
+local chest_map = {}
+local filters = {}
+local logistic_storage_tank_chest_names = {}
+for _, suffix in pairs(suffixes) do
+  local logistic_storage_tank_name = prefix_tank..suffix
+  local logistic_storage_tank_chest_name = prefix_chest..suffix
+  chest_map[logistic_storage_tank_name] =logistic_storage_tank_chest_name
+  table.insert(filters, {
+    filter = "name",
+    name = logistic_storage_tank_name,
+  })
+  table.insert(logistic_storage_tank_chest_names, logistic_storage_tank_chest_name)
+end
 
-local filters = {{filter = "name", name = name_tank_passive_provider}, {filter = "name", name = name_tank_requester}}
+local logistic_storage_tank_request_names = {}
+for _, suffix in pairs(suffixes_request) do
+  local logistic_storage_tank_name = prefix_tank..suffix
+  table.insert(logistic_storage_tank_request_names, logistic_storage_tank_name)
+end
 
 function string.starts(str, start)
   return string.sub(str, 1 ,string.len(start)) == start
@@ -63,7 +77,7 @@ function fns.on_entity_created(event)
   end
   
   if not entity then return end
-  if entity.name ~= name_tank_passive_provider and entity.name ~= name_tank_requester then return end
+  if not string.starts(entity.name, prefix_tank) then return end
 
   local logistic_storage_tank = {
     unit_number = entity.unit_number,
@@ -75,7 +89,7 @@ function fns.on_entity_created(event)
 
   global.logistic_storage_tanks[entity.unit_number] = logistic_storage_tank
 
-  logistic_storage_tank.chest = fns.find_entity_or_revive_ghost(entity.surface, name_chest_passive_provider, entity.position)
+  logistic_storage_tank.chest = fns.find_entity_or_revive_ghost(entity.surface, logistic_storage_tank_chest_names, entity.position)
   if not logistic_storage_tank.chest then
     logistic_storage_tank.chest = entity.surface.create_entity{
       name = chest_map[entity.name],
@@ -108,7 +122,7 @@ end
 function fns.on_entity_destroyed(event)
   local entity = event.entity
   if not (entity and entity.valid) then return end
-  if entity.name ~= name_tank_passive_provider and entity.name ~= name_tank_requester then return end
+  if not string.starts(entity.name, prefix_tank) then return end
 
   fns.destroy(fns.from_entity(entity))
 end
@@ -314,7 +328,7 @@ end
 
 function fns.on_gui_closed(event)
   local player = game.players[event.player_index]
-  if player and event.entity and (event.entity.name == name_tank_passive_provider or event.entity.name == name_tank_requester) then
+  if player and event.entity and event.entity.valid and string.starts(event.entity.name, prefix_tank) then
     fns.gui_close(player)
   end
 end
@@ -322,8 +336,11 @@ script.on_event(defines.events.on_gui_closed, fns.on_gui_closed)
 
 function fns.on_gui_opened(event)
   local player = game.players[event.player_index]
-  if player and event.entity and event.entity.name == name_tank_requester then
-    fns.gui_open(player, fns.from_entity(event.entity))
+  if not (player and event.entity and event.entity.valid) then return end
+  for _, logistic_storage_tank_request_name in pairs(logistic_storage_tank_request_names) do
+    if event.entity.name == logistic_storage_tank_request_name then
+      fns.gui_open(player, fns.from_entity(event.entity))
+    end
   end
 end
 script.on_event(defines.events.on_gui_opened, fns.on_gui_opened)

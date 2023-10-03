@@ -7,7 +7,7 @@ for liquid_name, liquid_prototype in pairs(liquids) do
   table.insert(item_equivalents, {
     type = "item",
     name = fluid_equivalent_prefix..liquid_name,
-    stack_size = 50,
+    stack_size = 10,
     icon = liquid_prototype.icon,
     icon_size = liquid_prototype.icon_size,
     icon_mipmaps = liquid_prototype.icon_mipmaps,
