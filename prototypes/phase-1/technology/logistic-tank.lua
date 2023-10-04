@@ -16,7 +16,7 @@ data:extend({
       --{ type = "unlock-recipe", recipe = "logistic-minibuffer-buffer"},
       { type = "unlock-recipe", recipe = "logistic-minibuffer-requester"},
     },
-    prerequisites = { "logistic-system" },
+    prerequisites = { "logistic-system", "minibuffer" },
     unit = {
       count = 500,
       ingredients =
