@@ -103,6 +103,17 @@ function LogisticTank.on_entity_created(event)
   end
   logistic_storage_tank.chest.destructible = false
 
+  -- support loading settings from blueprint
+  local tags = event.tags
+  if not tags then
+    if event.source and event.source.valid then
+      tags = LogisticTankCopy.serialize(event.source)
+    end
+  end
+  if tags then
+    LogisticTankCopy.deserialize(entity, tags)
+  end
+
   LogisticTank.enqueue_processing(entity.unit_number)
 end
 script.on_event(defines.events.on_entity_cloned, LogisticTank.on_entity_created, LogisticTank.filters)
