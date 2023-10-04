@@ -1,6 +1,7 @@
 local LogisticTank = {}
 
 LogisticTank.prefix_tank = "logistic-storage-tank-"
+LogisticTank.prefix_minibuffer = "logistic-minibuffer-"
 LogisticTank.prefix_chest = "logistic-storage-tank-logistic-chest-"
 LogisticTank.suffixes = { "active-provider", "passive-provider", "storage", "buffer", "requester" }
 LogisticTank.suffixes_request = { "storage", "buffer", "requester" }
@@ -15,6 +16,15 @@ for _, suffix in pairs(LogisticTank.suffixes) do
   table.insert(LogisticTank.filters, {
     filter = "name",
     name = logistic_storage_tank_name,
+  })
+  table.insert(LogisticTank.logistic_storage_tank_chest_names, logistic_storage_tank_chest_name)
+
+  local logistic_minibuffer_name = LogisticTank.prefix_minibuffer..suffix
+  local logistic_storage_tank_chest_name = LogisticTank.prefix_chest..suffix
+  LogisticTank.chest_map[logistic_minibuffer_name] =logistic_storage_tank_chest_name
+  table.insert(LogisticTank.filters, {
+    filter = "name",
+    name = logistic_minibuffer_name,
   })
   table.insert(LogisticTank.logistic_storage_tank_chest_names, logistic_storage_tank_chest_name)
 end
@@ -71,7 +81,7 @@ function LogisticTank.on_entity_created(event)
   end
   
   if not entity then return end
-  if not string.starts(entity.name, LogisticTank.prefix_tank) then return end
+  if not string.starts(entity.name, LogisticTank.prefix_tank) and not string.starts(entity.name, LogisticTank.prefix_minibuffer) then return end
 
   local logistic_storage_tank = {
     unit_number = entity.unit_number,
@@ -118,7 +128,7 @@ end
 function LogisticTank.on_entity_destroyed(event)
   local entity = event.entity
   if not (entity and entity.valid) then return end
-  if not string.starts(entity.name, LogisticTank.prefix_tank) then return end
+  if not string.starts(entity.name, LogisticTank.prefix_tank) and not string.starts(entity.name, LogisticTank.prefix_minibuffer) then return end
 
   LogisticTank.destroy(LogisticTank.from_entity(entity))
 end

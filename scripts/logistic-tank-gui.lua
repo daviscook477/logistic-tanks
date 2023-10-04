@@ -6,6 +6,8 @@ LogisticTankGUI.logistic_storage_tank_request_names = {}
 for _, suffix in pairs(LogisticTank.suffixes_request) do
   local logistic_storage_tank_name = LogisticTank.prefix_tank..suffix
   table.insert(LogisticTankGUI.logistic_storage_tank_request_names, logistic_storage_tank_name)
+  local logistic_minibuffer_name = LogisticTank.prefix_minibuffer..suffix
+  table.insert(LogisticTankGUI.logistic_storage_tank_request_names, logistic_minibuffer_name)
 end
 
 function LogisticTankGUI.gui_open(player, logistic_storage_tank)
@@ -137,7 +139,7 @@ end
 
 function LogisticTankGUI.on_gui_closed(event)
   local player = game.players[event.player_index]
-  if player and event.entity and event.entity.valid and string.starts(event.entity.name, LogisticTank.prefix_tank) then
+  if player and event.entity and event.entity.valid and (string.starts(event.entity.name, LogisticTank.prefix_tank) or string.starts(event.entity.name, LogisticTank.prefix_minibuffer)) then
     LogisticTankGUI.gui_close(player)
   end
 end

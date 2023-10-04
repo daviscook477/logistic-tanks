@@ -36,7 +36,7 @@ end
 ---Handles copying settings between requester tanks
 ---@param event EventData.on_entity_settings_pasted Event data
 function LogisticTankCopy.on_entity_settings_pasted_self(event)
-  if event.source.name ~= LogisticTank.prefix_tank.."requester" then return end
+  if event.source.name ~= LogisticTank.prefix_tank.."requester" and event.source.name ~= LogisticTank.prefix_tank.."requester" then return end
   local tags = LogisticTankCopy.serialize(event.source)
   if tags then
     LogisticTankCopy.deserialize(event.destination, tags)
@@ -87,7 +87,7 @@ end
 --- from assembly machines to requester tanks
 function LogisticTankCopy.on_entity_settings_pasted(event)
   if not (event.source and event.source.valid and event.destination and event.destination.valid) then return end
-  if event.destination.name ~= LogisticTank.prefix_tank.."requester" then return end
+  if event.destination.name ~= LogisticTank.prefix_tank.."requester" and event.destination.name ~= LogisticTank.prefix_minibuffer.."requester" then return end
   LogisticTankCopy.on_entity_settings_pasted_self(event)
   LogisticTankCopy.on_entity_settings_pasted_assembling_machine(event)
 end

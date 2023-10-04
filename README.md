@@ -1,5 +1,5 @@
 # Logistic Tanks
-Connect storage tanks to the logistics network so robots can move fluids around your base without the need for barrels.
+Connect storage tanks to the logistics network so robots can move fluids around your base without the need for barrels. Additionally provides logistic versions of Anicha's 1x1 minibuffers for compact fluid delivery.
 
 # Why
 1. Barrels are an extra complication to carrying fluids with logistic robots, and take a bunch of extra space for barreling and unbarreling - especially in a mall.
@@ -8,7 +8,7 @@ Connect storage tanks to the logistics network so robots can move fluids around 
 # Features
 1. Passive provider tank acts like a passive provider chest but for fluids instead of items.
 2. Requester tank acts like a requester chest but for fluids instead of items.
-2. Smaller 1x1 variants of the passive provider tank and requester tank for providing/requesting fluids within a small footprint.
+2. Passive provider/requester variants of Anicha's 1x1 minibuffers for providing/requesting fluids within a small footprint.
 3. Set the filter on requester tanks to indicate what type of fluid they require.
     - The filter is set with a convenient side GUI when opening the tank GUI.
     - The filter may only be changed if the tank is empty - we don't want mixed fluid networks!
@@ -37,7 +37,8 @@ Connect storage tanks to the logistics network so robots can move fluids around 
 
 # TODO
 1. Popup GUI for selecting the fluid + amount (should essentially just be the popup for setting a normal logistic request but w/o the tabs since we only want fluids)
-3. 1x1 tanks + sprite mask/highlight for them - I don't really like the 1x1 tank that exists on the mod portal. Do I need to make my own 1x1 tank as well for this to work?
+
+# I think I've given up on these
 7. graphics patch for 3x3 tanks (animation on the logistic chest) some sort of camera lens collapsing animation integrated as a patch on the top if possible
 8. when the tank is mined, use the pre-mine event to try to push not just the fluid in the real tank, but also the fluid in the chest as well out into the connected fluid network
 
