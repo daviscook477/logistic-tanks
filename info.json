@@ -3,13 +3,16 @@
   "version": "0.0.1",
   "title": "Logistic Tanks",
   "author": "test447",
+  "contact": "https://github.com/daviscook477/logistic-tanks/issues",
+  "factorio_version": "1.1",
   "dependencies": [
     "base",
     "extra-storage-tank-minibuffer"
   ],
   "description": "Use logistic robots to transport fluids directly from tank to tank without any need for barreling.",
-  "factorio_version": "1.1",
   "package": {
-    "ignore": [".git", ".github", ".vscode", ".kakrc"]
+    "git_publish_branch": "main",
+    "ignore": [".git", ".github", ".vscode", ".kakrc"],
+    "sync_portal_details":  true
   }
 }
