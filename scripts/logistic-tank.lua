@@ -111,6 +111,12 @@ script.on_event(defines.events.on_robot_built_entity, LogisticTank.on_entity_cre
 script.on_event(defines.events.script_raised_built, LogisticTank.on_entity_created, LogisticTank.filters)
 script.on_event(defines.events.script_raised_revive, LogisticTank.on_entity_created, LogisticTank.filters)
 
+function LogisticTank.relocate_sub(logistic_storage_tank, key, position)
+  if logistic_storage_tank[key] and logistic_storage_tank[key].valid then
+    logistic_storage_tank[key].teleport(position)
+  end
+end
+
 function LogisticTank.destroy_sub(logistic_storage_tank, key)
   if logistic_storage_tank[key] and logistic_storage_tank[key].valid then
     logistic_storage_tank[key].destroy()
@@ -235,11 +241,5 @@ function LogisticTank.on_tick(event)
   end
 end
 script.on_event(defines.events.on_tick, LogisticTank.on_tick)
-
-function LogisticTank.on_init(event)
-  global.logistic_storage_tanks = {}
-  global.logistic_storage_tanks_update_queue = Queue.new()
-end
-script.on_init(LogisticTank.on_init)
 
 return LogisticTank

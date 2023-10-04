@@ -42,3 +42,30 @@ end
 local on_player_mined_entity_filter = fns.deepcopy(LogisticTank.filters)
 table.insert(on_player_mined_entity_filter, {filter="robot-with-logistics-interface"})
 script.on_event(defines.events.on_player_mined_entity, on_player_mined_entity, on_player_mined_entity_filter)
+
+function on_dolly_moved_entity_id(event)
+  local entity = event.moved_entity
+  if not (entity and entity.valid) then return end
+  if not string.starts(entity.name, LogisticTank.prefix_tank) and not string.starts(entity.name, LogisticTank.prefix_minibuffer) then return end
+  local logistic_storage_tank = LogisticTank.from_entity(entity)
+  if not logistic_storage_tank then return end
+  local main = logistic_storage_tank.main
+  if not (main and main.valid) then return LogisticTank.destroy(logistic_storage_tank) end
+  LogisticTank.relocate_sub(logistic_storage_tank, "chest", main.position)
+end
+
+function on_init(event)
+  global.logistic_storage_tanks = {}
+  global.logistic_storage_tanks_update_queue = Queue.new()
+  if remote.interfaces["PickerDollies"] and remote.interfaces["PickerDollies"]["dolly_moved_entity_id"] then
+    script.on_event(remote.call("PickerDollies", "dolly_moved_entity_id"), on_dolly_moved_entity_id)
+  end
+end
+script.on_init(on_init)
+
+function on_load(event)
+  if remote.interfaces["PickerDollies"] and remote.interfaces["PickerDollies"]["dolly_moved_entity_id"] then
+    script.on_event(remote.call("PickerDollies", "dolly_moved_entity_id"), on_dolly_moved_entity_id)
+  end
+end
+script.on_load(on_load)
