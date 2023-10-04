@@ -1,5 +1,6 @@
 # Logistic Tanks
 Connect storage tanks to the logistics network so robots can move fluids around your base without the need for barrels. Additionally provides logistic versions of Anicha's 1x1 minibuffers for compact fluid delivery.
+![](mod-portal/between_tanks.png)
 
 ## Motivation
 1. Barrels are an extra complication to carrying fluids with logistic robots, and take a bunch of extra space for barreling and unbarreling - especially in a mall.
