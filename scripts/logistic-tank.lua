@@ -111,7 +111,6 @@ script.on_event(defines.events.on_robot_built_entity, LogisticTank.on_entity_cre
 script.on_event(defines.events.script_raised_built, LogisticTank.on_entity_created, LogisticTank.filters)
 script.on_event(defines.events.script_raised_revive, LogisticTank.on_entity_created, LogisticTank.filters)
 
-
 function LogisticTank.destroy_sub(logistic_storage_tank, key)
   if logistic_storage_tank[key] and logistic_storage_tank[key].valid then
     logistic_storage_tank[key].destroy()

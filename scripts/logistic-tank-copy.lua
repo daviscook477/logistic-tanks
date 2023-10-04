@@ -24,8 +24,8 @@ function LogisticTankCopy.deserialize(entity, tags)
   local fluid_boxes = main.fluidbox
   local fluid_box = fluid_boxes[1]
   if not fluid_box then
-    logistic_storage_tank.fluid_type = tags.fluid_type
-  elseif fluid_box.fluid_type ~= tags.fluid_type then
+    logistic_storage_tank.name = tags.fluid_type
+  elseif fluid_box.name ~= tags.fluid_type then
     -- flying text
   else
     -- filters are already the same - noop
@@ -68,17 +68,19 @@ function LogisticTankCopy.on_entity_settings_pasted_assembling_machine(event)
   if not pastes[1] then return end
   local logistic_storage_tank = LogisticTank.from_entity(event.destination)
   if not logistic_storage_tank then return end
-  logistic_storage_tank.request_amount = pastes[1].paste_amount
   local main = logistic_storage_tank.main
   if not (main and main.valid) then return LogisticTank.destroy(logistic_storage_tank) end
   local fluid_boxes = main.fluidbox
   local fluid_box = fluid_boxes[1]
   if not fluid_box then
     logistic_storage_tank.fluid_type = pastes[1].paste_type
-  elseif fluid_box.fluid_type ~= pastes[1].paste_type then
+    logistic_storage_tank.request_amount = pastes[1].paste_amount
+  elseif fluid_box.name ~= pastes[1].paste_type then
     -- flying text
+    game.print({"logistic-tanks.cannot-switch-filter"})
   else
     -- filters are already the same - noop
+    logistic_storage_tank.request_amount = pastes[1].paste_amount
   end
   LogisticTank.update_request(logistic_storage_tank)
 end

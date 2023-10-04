@@ -34,14 +34,3 @@ Connect storage tanks to the logistics network so robots can move fluids around 
     - This has the caveat of making each logistic tank capable of storing twice the fluid as a typical storage tank since it has both its fluid storage and the chest storage.
 3. Small relative GUI for the interactible storage tank that lets the player pick the filter/request.
     - Interactions with this GUI are propagated to the internal logistic chest.
-
-# TODO
-1. Popup GUI for selecting the fluid + amount (should essentially just be the popup for setting a normal logistic request but w/o the tabs since we only want fluids)
-
-# I think I've given up on these
-7. graphics patch for 3x3 tanks (animation on the logistic chest) some sort of camera lens collapsing animation integrated as a patch on the top if possible
-8. when the tank is mined, use the pre-mine event to try to push not just the fluid in the real tank, but also the fluid in the chest as well out into the connected fluid network
-
-# MAYBE
-1. Use a different force logistic network so the tanks don't cross with the chests - this allows active provider, buffer, and storage to exist
-   - This can also introduce a different logistics robot specifically for transferring fluids - the only problem is that I'd essentially have to turn every roboport into two roboports and the fluid logistic robots wouldn't be accessible from the inventory of the main roboport - really not ideal
