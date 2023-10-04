@@ -129,7 +129,6 @@ script.on_event(defines.events.on_player_setup_blueprint, LogisticTankCopy.on_pl
 ---Handles both copying settings between requester tanks and copying
 ---from assembly machines to requester tanks
 function LogisticTankCopy.on_entity_settings_pasted(event)
-  game.print("pasted")
   if not (event.source and event.source.valid and event.destination and event.destination.valid) then return end
   if event.destination.name ~= LogisticTank.prefix_tank.."requester" and event.destination.name ~= LogisticTank.prefix_minibuffer.."requester" then return end
   LogisticTankCopy.on_entity_settings_pasted_self(event)
