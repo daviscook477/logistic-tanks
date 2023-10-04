@@ -18,7 +18,7 @@ Connect storage tanks to the logistics network so robots can move fluids around 
     - The requests of a requester tank cannot be set using the circuit network. This is limited because we don't want mixed fluid networks.
 6. Logistic robots recipe includes barrels, since the robots need somewhere to store the fluid they transport.
     - Can be enabled/disabled in mod settings. Defaults to enabled.
-7. Minimal UPS impact, only checks up to 10 tanks per tick = 600 tanks per second.
+7. Limited UPS impact, only checks up to 10 tanks per tick = 600 tanks per second.
     - Number of tanks checked per tick can be increased to increase throughput of fluids at a potential UPS cost for bases making heavy use of logistic tanks.
 
 ## Limitations
