@@ -1,7 +1,7 @@
 # Logistic Tanks
 Connect storage tanks to the logistics network so robots can move fluids around your base without the need for barrels. Additionally provides logistic versions of Anicha's 1x1 minibuffers for compact fluid delivery.
 
-# Why
+# Motivation
 1. Barrels are an extra complication to carrying fluids with logistic robots, and take a bunch of extra space for barreling and unbarreling - especially in a mall.
 2. The logistic robots already have a compartment for storing items that they transport around the factory - so why not make the compartment water-tight and capable of directly transporting fluids. When the robot docks with the logistic variants of storage tanks, it fills/empties its internal tank.
 
@@ -24,13 +24,7 @@ Connect storage tanks to the logistics network so robots can move fluids around 
 1. The active provider, storage, and buffer tanks are intentionally left unimplemented. Due to the internal setup of this mode, an active provider tank could provide to a storage chest or vice versa (similar issue with buffer tanks/chests).
 2. Even with the above precaution it is still possible for a storage chest to have fluids inserted directly by logistic robots if the requester tank to which they are transporting fluids is destroyed while they are travelling. In most cases this will resolve itself when the requester tank is rebuilt and the fluid in the storage chest is prioritized over fluid in a passive provider tank due to the priority order of the logistic network.
 
-# Design
-1. Storage tank + logistic chest in the same position on the map.
-    - The player interacts with the storage tank.
-    - The logistic robots interact with the logistic chest.
-    - Logistic chest has exactly enough slots to storage an equal amount of fluid in barrels to the amount directly stored by the tank.
-2. Lua script equalizes the amount of fluid barrels in the logistic chest to match the amount of fluid in the storage tank.
-    - This is calculated by taking the sum of the fluid in the storage tank with the number of fluid in the logistic chest and then dividing in half to determine the actual amount expected to be in each the storage tank and the logistic chest. Since barrels can only be in integer amounts, the logistic chests gets a number of barrels equal to the floor of the sum over two and then the storge tank can just get the remainder.
-    - This has the caveat of making each logistic tank capable of storing twice the fluid as a typical storage tank since it has both its fluid storage and the chest storage.
-3. Small relative GUI for the interactible storage tank that lets the player pick the filter/request.
-    - Interactions with this GUI are propagated to the internal logistic chest.
+# Credits
+1. [test447](https://mods.factorio.com/user/test447) - code, minibuffer mask, tech icon
+2. [Kirazy](https://mods.factorio.com/user/Kirazy) - storage tank mask
+3. [Anicha](https://mods.factorio.com/user/Anicha) - minibuffer dependency
