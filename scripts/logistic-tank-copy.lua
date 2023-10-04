@@ -76,8 +76,12 @@ function LogisticTankCopy.on_entity_settings_pasted_assembling_machine(event)
   local main = logistic_storage_tank.main
   if not (main and main.valid) then return LogisticTank.destroy(logistic_storage_tank) end
 
+  -- clamp the request at maximum by the capacity of the requester tank
   local amount = pastes[1].paste_amount
   amount = math.min(amount, game.entity_prototypes[event.destination.name].fluid_capacity)
+
+  -- clamp the request at minimum by 1
+  amount = math.max(amount, 1)
 
   local fluid_boxes = main.fluidbox
   local fluid_box = fluid_boxes[1]
