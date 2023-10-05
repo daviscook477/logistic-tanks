@@ -30,7 +30,6 @@ Connect storage tanks to the logistics network so robots can move fluids around 
 
 ## TODO
 1. Turns out the only type of tank we can't have is active provider tank. Storage and buffer tanks can be used without trouble if the chests are *always* filtered - i.e. it will need a system to destroy/create the chest when the filter changes in the GUI
-2. Test to ensure no crashes or wonky behavior with multiple fluid networks.
 
 ## Credits
 1. [test447](https://mods.factorio.com/user/test447) - code, minibuffer mask, tech icon
