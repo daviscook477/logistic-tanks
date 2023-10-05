@@ -1,9 +1,9 @@
 # Logistic Tanks
-Connect storage tanks to the logistics network so robots can move fluids around your base without the need for barrels. Additionally provides logistic versions of Anicha's 1x1 minibuffers for compact fluid delivery.
+Connect storage tanks to the logistics network so robots can move fluids around your base without the need for barreling/unbarreling. Additionally provides logistic versions of Anicha's 1x1 minibuffers for compact fluid delivery.
 ![](mod-portal/between_tanks.png)
 
 ## Motivation
-1. Barrels are an extra complication to carrying fluids with logistic robots, and take a bunch of extra space for barreling and unbarreling - especially in a mall.
+1. Barreling and unbarreling are an extra complication to carrying fluids with logistic robots, and take a bunch of extra space, especially in a mall.
 2. The logistic robots already have a compartment for storing items that they transport around the factory - so why not make the compartment water-tight and capable of directly transporting fluids. When the robot docks with the logistic variants of storage tanks, it fills/empties its internal tank.
 
 ## Features
@@ -16,28 +16,22 @@ Connect storage tanks to the logistics network so robots can move fluids around 
 4. Copy/paste requests from assembly machines onto requester tanks just like requester chests.
 5. Circuit connections to the tanks read the contents of the tank.
     - The requests of a requester tank cannot be set using the circuit network. This is limited because we don't want mixed fluid networks.
-6. Logistic robots recipe includes barrels, since the robots need somewhere to store the fluid they transport.
+6. The amount of fluid in the logistic network can be read from roboports - be careful as these are virtual signals not the typical fluid signal - and are equivalent to 1/50th (w/ default settings) the actual amount of fluid stored
+7. Logistic robots recipe includes barrels, since the robots need somewhere to store the fluid they transport.
     - Can be enabled/disabled in mod settings. Defaults to enabled.
-7. Limited UPS impact, only checks up to 10 tanks per tick = 600 tanks per second.
+8. Limited UPS impact, only checks up to 10 tanks per tick = 600 tanks per second.
     - Number of tanks checked per tick can be increased to increase throughput of fluids at a potential UPS cost for bases making heavy use of logistic tanks.
 
 ## Limitations
-1. The active provider, storage, and buffer tanks are intentionally left unimplemented. Due to the internal setup of this mod, an active provider tank could provide to a storage chest or vice versa (similar issue with buffer tanks/chests).
+1. The active provider tank is intentionally left unavailable by default. Due to the internal setup of this mod, an active provider tank could provide to a storage chest - which would break the mod's goal of keeping the fluids in the logistic network separate from the items in it. You may enable this in the mod settings if you are willing to have the fluids provided by the active provider tank stored in standard storage chests.
+    - To work around this limitation, rather than having high priority fluids be provided by active provider tanks, have high priority fluids be provided by storage tanks. Then use a requester tank where the fluid should be stored - it will prioritize pulling from storage tanks over passive provider tanks.
 2. Even with the above precaution it is still possible for a storage chest to have fluids inserted directly by logistic robots if the requester tank to which they are transporting fluids is destroyed while they are travelling. In most cases this will resolve itself when the requester tank is rebuilt and the fluid in the storage chest is prioritized over fluid in a passive provider tank due to the priority order of the logistic network.
-3. 
+3. The amount of fluids in the logistic network read from a roboport with "read logistic network contents" enabled are not the typical fluid signals. They are special fluid in logistic network variants that are equivalent to 50 standard fluid units by default (the amount if equivalent to mod setting for "liquid per cargo slot"). They can be found in the virtual signals tab rather than the fluids tab. In order for these signals to be interactable in combinators, the logistic network item equivalents of each fluid are also choosable within the filters of requester, buffer, and storage chests. If you do not want to mix the fluids in the logistic network with the chests, do not select these filters.
 
 ## TODO
 1. Turns out the only type of tank we can't have is active provider tank. Storage and buffer tanks can be used without trouble if the chests are *always* filtered - i.e. it will need a system to destroy/create the chest when the filter changes in the GUI
-2. When trying to use the GUI to change the filter, also check the internal logistic chest and immediately equalize if it contains fluid. Then performthe same fluid check for changing the filter.
+2. When trying to use the GUI to change the filter, also check the internal logistic chest and immediately equalize if it contains fluid. Then perform the same fluid check for changing the filter.
 3. Test to ensure no crashes or wonky behavior with multiple fluid networks.
-4. The logistic network actually produces a read signal for each of the fluid items in it, but because these are hidden items they aren't comparable in combinators. Additionally, even if I unhide them, they are different signals than the actual fluid signals. There are a couple ways to deal with this an none of them are good.
-    - Ignore the problem and list it as a limitation. The amount of fluid in the logistic network cannot be read at all. This will still leave the signals present in the output circuit signal and in the logistic network GUI.
-    - Stop marking the items as hidden. Create a new group for them. Since no recipe unlocks these items, they won't be visible in the course of normal gameplay. But now we have different signals for real fluids (in pipes/tanks) and logistic network fluids that are not equivalent but share signal icons.
-    - The same as the above idea but figure out some good alternate icon for the logistic network fluids to distinguish them. Are the barreled versions of each fluid a reasonable icon? This would conflict with the barrel signals instead which isn't that much of an improvement. What if I just legitimately use the barrel items as the logistic network fluid item? Those are normal items so the player can simply request them in a normal logistic chest. To prevent that the item either has to be hidden, or have no recipe. Making the item hidden defeats the whole purpose of what I'm trying to do here, so what if I have barrels but without recipes to unlock any fluid-specific barrel items. Now any mod that uses fluid-specific barrel items in their recipes will be incompatible with logistic tanks. And any player that wants to use barrels for legitimate non logistic tank purposes will find this mod incompatible.
-    - Create a combinator-esque building with circuit connections that transforms the signals from the roboport into normal fluid signals - this is fairly usable but adds a combinator-esque building which either updates really slowly or is terrible for UPS so I don't really like it. Also duplicate icon signals are still an issue since adding the normal roboport signals to the result of this combinator will result in both the real fluid signals and the logisic fluid signals being present on the wire.
-    - An even worse idea is to put a hidden constant combinator under every roboport and automatically update it with the right fluid signal values and connect it to the placed roboport automatically. This is like the combinator-esque building idea above but even worse for UPS.
-    - Stop marking the items as hidden. Create a new group for them. Since no recipe unlocks these items, they won't be visible in the course of normal gameplay. But now we have different signals for real fluids (in pipes/tanks) and logistic network fluids that are not equivalent. This idea is actually a terrible idea since always control deals with logistic requests and signals the same "Always show the item in selection lists (item filter, logistic request etc.) even when locked recipe for that item is present" so we can't actually do this. If the player is able to interact with the signal directly - they will be able to request the fluids to normal chests - which defeats the whole idea of the mod.
-    - So the only real solution is to have some sort of script that is converting the signals. Do I want to do that? Not really. Of course I could just make the items into barrels and let the player request them into normal chests if they really want to. And then it's up to players themself to avoid doing anything cheating with the mod.
 
 ## Credits
 1. [test447](https://mods.factorio.com/user/test447) - code, minibuffer mask, tech icon

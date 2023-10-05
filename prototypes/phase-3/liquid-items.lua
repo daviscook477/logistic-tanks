@@ -22,11 +22,12 @@ for liquid_name, liquid_prototype in pairs(liquids) do
     icon_size = liquid_prototype.icon_size,
     icon_mipmaps = liquid_prototype.icon_mipmaps,
     icons = liquid_prototype.icons,
+    subgroup = "virtual-signal",
     order = liquid_prototype.order,
     localised_name = liquid_prototype.localised_name or {"logistic-tanks.fluid-name", {"fluid-name."..liquid_name}},
     localised_description = liquid_prototype.localised_description or {"logistic-tanks.fluid-description", {"fluid-name."..liquid_name}},
-    -- The item equivalent should not be visible to the player since it is strictly an internal detail of how this mod works
-    flags = {"hidden"} 
+    -- The item equivalent cannot be hidden from the player despite being a mostly internal detail of how this mod works since hidden items do not show up in combinators
+    -- For the most part the item will still remain hidden since no recipe unlocks it
   })
 end
 
