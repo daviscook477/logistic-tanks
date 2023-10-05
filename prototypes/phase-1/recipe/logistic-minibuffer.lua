@@ -24,6 +24,6 @@ end
 data:extend({
   fns.make_logistic_minibuffer_recipe("passive-provider"),
   --fns.make_logistic_minibuffer_recipe("storage"),
-  --fns.make_logistic_minibuffer_recipe("buffer"),
+  fns.make_logistic_minibuffer_recipe("buffer"),
   fns.make_logistic_minibuffer_recipe("requester")
 })

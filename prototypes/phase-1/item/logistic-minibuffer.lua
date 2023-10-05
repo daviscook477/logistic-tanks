@@ -40,6 +40,6 @@ end
 data:extend({
   fns.make_logistic_minibuffer_item("passive-provider", "c", logistic_tanks.tint_logistic_minibuffer_passive_provider ),
   --fns.make_logistic_minibuffer_item("storage", "c", logistic_tanks.tint_logistic_storage_tank_storage),
-  --fns.make_logistic_minibuffer_item("buffer", "d", logistic_tanks.tint_logistic_storage_tank_buffer),
+  fns.make_logistic_minibuffer_item("buffer", "d", logistic_tanks.tint_logistic_storage_tank_buffer),
   fns.make_logistic_minibuffer_item("requester", "e", logistic_tanks.tint_logistic_storage_tank_requester)
 })

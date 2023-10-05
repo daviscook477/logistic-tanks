@@ -24,6 +24,6 @@ end
 data:extend({
   fns.make_logistic_storage_tank_recipe("passive-provider"),
   --fns.make_logistic_storage_tank_recipe("storage"),
-  --fns.make_logistic_storage_tank_recipe("buffer"),
+  fns.make_logistic_storage_tank_recipe("buffer"),
   fns.make_logistic_storage_tank_recipe("requester")
 })

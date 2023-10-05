@@ -1,5 +1,14 @@
 local LogisticTankCopy = {}
 
+local fns = {}
+
+function fns.table_contains(table, target)
+  for _, item in pairs(table) do
+    if item == target then return true end
+  end
+  return false
+end
+
 ---Converts a logistic tank's settings to a serialized tags format
 ---@param entity any the logistic tank main entity
 ---@return table the storable tag representation of this logistic tank's settings
@@ -41,7 +50,7 @@ end
 ---Handles copying settings between requester tanks
 ---@param event EventData.on_entity_settings_pasted Event data
 function LogisticTankCopy.on_entity_settings_pasted_self(event)
-  if event.source.name ~= LogisticTank.prefix_tank.."requester" and event.source.name ~= LogisticTank.prefix_minibuffer.."requester" then return end
+  if not fns.table_contains(LogisticTankGUI.logistic_storage_tank_request_names, event.source.name) then return end
   local tags = LogisticTankCopy.serialize(event.source)
   if tags then
     LogisticTankCopy.deserialize(event.destination, tags)
@@ -116,7 +125,7 @@ function LogisticTankCopy.on_player_setup_blueprint(event)
   local blueprint_entities = blueprint.get_blueprint_entities()
   if blueprint_entities then
     for _, blueprint_entity in pairs(blueprint_entities) do
-      if blueprint_entity.name == LogisticTank.prefix_tank.."requester" or blueprint_entity.name == LogisticTank.prefix_minibuffer.."requester" then
+      if fns.table_contains(LogisticTankGUI.logistic_storage_tank_request_names, blueprint_entity.name) then
         local entity = mapping[blueprint_entity.entity_number]
         if entity then
           local tags = LogisticTankCopy.serialize(entity)
@@ -134,7 +143,7 @@ script.on_event(defines.events.on_player_setup_blueprint, LogisticTankCopy.on_pl
 ---from assembly machines to requester tanks
 function LogisticTankCopy.on_entity_settings_pasted(event)
   if not (event.source and event.source.valid and event.destination and event.destination.valid) then return end
-  if event.destination.name ~= LogisticTank.prefix_tank.."requester" and event.destination.name ~= LogisticTank.prefix_minibuffer.."requester" then return end
+  if not fns.table_contains(LogisticTankGUI.logistic_storage_tank_request_names, event.destination.name) then return end
   LogisticTankCopy.on_entity_settings_pasted_self(event)
   LogisticTankCopy.on_entity_settings_pasted_assembling_machine(event)
 end
