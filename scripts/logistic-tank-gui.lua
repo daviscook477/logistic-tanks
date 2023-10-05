@@ -2,12 +2,23 @@ LogisticTankGUI = {}
 
 LogisticTankGUI.name_gui_root = "logistic-storage-tank-filter"
 
-LogisticTankGUI.logistic_storage_tank_request_names = {}
+LogisticTankGUI.logistic_storage_tank_filtered_names = {}
 for _, suffix in pairs(LogisticTank.suffixes_request) do
   local logistic_storage_tank_name = LogisticTank.prefix_tank..suffix
-  table.insert(LogisticTankGUI.logistic_storage_tank_request_names, logistic_storage_tank_name)
+  table.insert(LogisticTankGUI.logistic_storage_tank_filtered_names, logistic_storage_tank_name)
   local logistic_minibuffer_name = LogisticTank.prefix_minibuffer..suffix
-  table.insert(LogisticTankGUI.logistic_storage_tank_request_names, logistic_minibuffer_name)
+  table.insert(LogisticTankGUI.logistic_storage_tank_filtered_names, logistic_minibuffer_name)
+end
+
+LogisticTankGUI.logistic_storage_tank_request_names = { LogisticTank.prefix_tank.."requester", LogisticTank.prefix_minibuffer.."requester" }
+
+local fns = {}
+
+function fns.table_contains(table, target)
+  for _, item in pairs(table) do
+    if item == target then return true end
+  end
+  return false
 end
 
 function LogisticTankGUI.gui_open(player, logistic_storage_tank)
@@ -30,7 +41,7 @@ function LogisticTankGUI.gui_open(player, logistic_storage_tank)
   }
 
   local title_flow = container.add{type = "flow", name = "title-flow", direction = "horizontal"}
-  title_flow.add{type = "label", name = "title-label", style = "frame_title", caption = {"logistic-tanks.relative-window-title"}, ignored_by_interaction = true}
+  title_flow.add{type = "label", name = "title-label", style = "frame_title", caption = {"gui-logistic.title-request"}, ignored_by_interaction = true}
   local title_empty = title_flow.add{
     type = "empty-widget",
     ignored_by_interaction = true
@@ -84,8 +95,8 @@ function LogisticTankGUI.gui_open(player, logistic_storage_tank)
   end
 
   local gui_flow_2 = gui_inner.add{type="flow", name="gui_flow_2", direction="horizontal", style = "player_input_horizontal_flow"}
-  gui_flow.style.horizontally_stretchable = "on"
-  gui_flow.style.vertical_align = "center"
+  gui_flow_2.style.horizontally_stretchable = "on"
+  gui_flow_2.style.vertical_align = "center"
 
   local max = game.entity_prototypes[player.opened.name].fluid_capacity
   local slider = gui_flow_2.add{
@@ -112,6 +123,21 @@ function LogisticTankGUI.gui_open(player, logistic_storage_tank)
     sprite="utility/confirm_slot",
   }
 
+  if logistic_storage_tank.main and logistic_storage_tank.main.valid and fns.table_contains(LogisticTankGUI.logistic_storage_tank_request_names, logistic_storage_tank.main.name) and logistic_storage_tank.chest and logistic_storage_tank.chest.valid then
+    local gui_flow_3 = gui_inner.add{type="flow", name="gui_flow_3", direction="horizontal", style = "horizontal_flow"}
+    gui_flow_3.style.horizontally_stretchable = "on"
+    gui_flow_3.style.vertical_align = "center"
+
+    local checkbox = gui_flow_3.add{
+      type="checkbox",
+      name="logistic-storage-tank-checkbox",
+      style="checkbox",
+      state = logistic_storage_tank.chest.request_from_buffers,
+      caption = {"gui-logistic.request-from-buffer-chests"}
+    }
+    checkbox.style.left_margin = 0
+  end
+
   LogisticTankGUI.gui_update(player)
 end
 
@@ -119,13 +145,29 @@ function LogisticTankGUI.on_gui_value_changed(event)
   local player = game.players[event.player_index]
   if not (event.element and event.element.name == "logistic-storage-tank-slider") then return end
 
-  
   local root = player.gui.relative[LogisticTankGUI.name_gui_root]
   if not (root and root.tags and root.tags.unit_number) then return end
 
   root["gui_inner"]["gui_flow_2"]["logistic-storage-tank-textfield"].text = tostring(event.element.slider_value)
 end
 script.on_event(defines.events.on_gui_value_changed, LogisticTankGUI.on_gui_value_changed)
+
+function LogisticTankGUI.on_gui_checked_state_changed(event)
+  local player = game.players[event.player_index]
+  if not (event.element and event.element.name == "logistic-storage-tank-checkbox") then return end
+
+  local root = player.gui.relative[LogisticTankGUI.name_gui_root]
+  if not (root and root.tags and root.tags.unit_number) then return end
+
+  local logistic_storage_tank = LogisticTank.from_unit_number(root.tags.unit_number)
+  if not logistic_storage_tank then return end
+
+  local chest = logistic_storage_tank.chest
+  if not (chest and chest.valid) then return end
+
+  chest.request_from_buffers = event.element.state
+end
+script.on_event(defines.events.on_gui_checked_state_changed, LogisticTankGUI.on_gui_checked_state_changed)
 
 function LogisticTankGUI.on_gui_click(event)
   local player = game.players[event.player_index]
@@ -198,7 +240,7 @@ script.on_event(defines.events.on_gui_closed, LogisticTankGUI.on_gui_closed)
 function LogisticTankGUI.on_gui_opened(event)
   local player = game.players[event.player_index]
   if not (player and event.entity and event.entity.valid) then return end
-  for _, logistic_storage_tank_request_name in pairs(LogisticTankGUI.logistic_storage_tank_request_names) do
+  for _, logistic_storage_tank_request_name in pairs(LogisticTankGUI.logistic_storage_tank_filtered_names) do
     if event.entity.name == logistic_storage_tank_request_name then
       LogisticTankGUI.gui_open(player, LogisticTank.from_entity(event.entity))
     end
