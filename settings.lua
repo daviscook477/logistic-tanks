@@ -16,6 +16,13 @@ data:extend({
     default_value = true,
     order = "b"
   },
+  {
+    type = "bool-setting",
+    name = "logistic-tanks-enable-active-provider",
+    setting_type = "startup",
+    default_value = false,
+    order = "c"
+  },
   -- Runtime global
   {
     type = "int-setting",
@@ -24,6 +31,6 @@ data:extend({
     default_value = 10,
     minimum_value = 1,
     maximum_value = 100,
-    order = "c"
+    order = "d"
 },
 })

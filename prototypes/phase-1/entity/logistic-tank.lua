@@ -216,7 +216,9 @@ function fns.make_logistic_storage_tank(name, tint)
   }
 end
 
---data:extend(fns.make_logistic_storage_tank("active-provider", logistic_tanks.tint_logistic_storage_tank_active_provider))
+if settings.startup["logistic-tanks-enable-active-provider"].value then
+  data:extend(fns.make_logistic_storage_tank("active-provider", logistic_tanks.tint_logistic_storage_tank_active_provider))
+end
 data:extend(fns.make_logistic_storage_tank("passive-provider", logistic_tanks.tint_logistic_storage_tank_passive_provider))
 --data:extend(fns.make_logistic_storage_tank("storage", logistic_tanks.tint_logistic_storage_tank_storage))
 --data:extend(fns.make_logistic_storage_tank("buffer", logistic_tanks.tint_logistic_storage_tank_buffer))

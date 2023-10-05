@@ -42,7 +42,9 @@ function fns.make_logistic_minibuffer(name, tint)
   }
 end
 
---data:extend(fns.make_logistic_minibuffer("active-provider", logistic_tanks.tint_logistic_storage_tank_active_provider))
+if settings.startup["logistic-tanks-enable-active-provider"].value then
+  data:extend(fns.make_logistic_minibuffer("active-provider", logistic_tanks.tint_logistic_storage_tank_active_provider))
+end
 data:extend(fns.make_logistic_minibuffer("passive-provider", logistic_tanks.tint_logistic_minibuffer_passive_provider))
 --data:extend(fns.make_logistic_minibuffer("storage", logistic_tanks.tint_logistic_storage_tank_storage))
 --data:extend(fns.make_logistic_minibuffer("buffer", logistic_tanks.tint_logistic_storage_tank_buffer))

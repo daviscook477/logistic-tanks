@@ -1,16 +1,29 @@
+local effects_logistic_fluids = {
+  { type = "unlock-recipe", recipe = "logistic-storage-tank-passive-provider"},
+  --{ type = "unlock-recipe", recipe = "logistic-storage-tank-storage"},
+  --{ type = "unlock-recipe", recipe = "logistic-storage-tank-buffer"},
+  { type = "unlock-recipe", recipe = "logistic-storage-tank-requester"},
+}
+
+local effects_logistic_minibuffers = {
+  { type = "unlock-recipe", recipe = "logistic-minibuffer-passive-provider"},
+  --{ type = "unlock-recipe", recipe = "logistic-minibuffer-storage"},
+  --{ type = "unlock-recipe", recipe = "logistic-minibuffer-buffer"},
+  { type = "unlock-recipe", recipe = "logistic-minibuffer-requester"},
+}
+
+if settings.startup["logistic-tanks-enable-active-provider"].value then
+  table.insert(effects_logistic_fluids, { type = "unlock-recipe", recipe = "logistic-storage-tank-active-provider"})
+  table.insert(effects_logistic_minibuffers, { type = "unlock-recipe", recipe = "logistic-minibuffer-active-provider"})
+end
+
 data:extend({
   {
     type = "technology",
     name = "logistic-fluids",
     icon_size = 256,
     icon = "__logistic-tanks__/graphics/technology/logistic-storage-tank.png",
-    effects = {
-      --{ type = "unlock-recipe", recipe = "logistic-storage-tank-active-provider"},
-      { type = "unlock-recipe", recipe = "logistic-storage-tank-passive-provider"},
-      --{ type = "unlock-recipe", recipe = "logistic-storage-tank-storage"},
-      --{ type = "unlock-recipe", recipe = "logistic-storage-tank-buffer"},
-      { type = "unlock-recipe", recipe = "logistic-storage-tank-requester"},
-    },
+    effects = effects_logistic_fluids,
     prerequisites = { "logistic-system" },
     unit = {
       count = 500,
@@ -49,13 +62,7 @@ data:extend({
       },
     },
     icon = "__logistic-tanks__/graphics/technology/logistic-storage-tank.png",
-    effects = {
-      --{ type = "unlock-recipe", recipe = "logistic-minibuffer-active-provider"},
-      { type = "unlock-recipe", recipe = "logistic-minibuffer-passive-provider"},
-      --{ type = "unlock-recipe", recipe = "logistic-minibuffer-storage"},
-      --{ type = "unlock-recipe", recipe = "logistic-minibuffer-buffer"},
-      { type = "unlock-recipe", recipe = "logistic-minibuffer-requester"},
-    },
+    effects = effects_logistic_minibuffers,
     prerequisites = { "logistic-fluids", "minibuffer" },
     unit = {
       count = 75,

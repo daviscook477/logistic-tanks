@@ -15,8 +15,13 @@ function fns.make_logistic_minibuffer_recipe(name)
   }
 end
 
+if settings.startup["logistic-tanks-enable-active-provider"].value then
+  data:extend({
+    fns.make_logistic_minibuffer_recipe("active-provider"),
+  })
+end
+
 data:extend({
-  --fns.make_logistic_minibuffer_recipe("active-provider"),
   fns.make_logistic_minibuffer_recipe("passive-provider"),
   --fns.make_logistic_minibuffer_recipe("storage"),
   --fns.make_logistic_minibuffer_recipe("buffer"),
