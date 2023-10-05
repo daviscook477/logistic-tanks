@@ -143,6 +143,10 @@ function LogisticTankGUI.on_gui_click(event)
   if not (player.opened and player.opened.valid) then return end
 
   if event.element.name == "logistic-storage-tank-confirm-button" then
+    -- perform an equalize in case fluid was already delivered to the internal logistic chest but wasn't reflected in the tank yet
+    --  we don't want to be able to set the filter to a different fluid if this has happened since that would cause us to lose fluid
+    LogisticTank.equalize_inventory(logistic_storage_tank)
+
     local amount = tonumber(root["gui_inner"]["gui_flow_2"]["logistic-storage-tank-textfield"].text)
     amount = math.min(amount, game.entity_prototypes[player.opened.name].fluid_capacity)
 
