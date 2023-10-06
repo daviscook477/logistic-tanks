@@ -6,3 +6,5 @@ logistic_tanks.tint_logistic_storage_tank_requester = {r=51, g=180, b=255}
 
 -- not a perfect mask so the tint has to be different to match
 logistic_tanks.tint_logistic_minibuffer_passive_provider = {r=190, g=50, b=40}
+
+logistic_tanks.copy_paste_names = { "logistic-storage-tank-requester", "logistic-storage-tank-buffer", "logistic-minibuffer-requester", "logistic-minibuffer-buffer" }

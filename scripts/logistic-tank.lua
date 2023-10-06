@@ -4,7 +4,7 @@ LogisticTank.prefix_tank = "logistic-storage-tank-"
 LogisticTank.prefix_minibuffer = "logistic-minibuffer-"
 LogisticTank.prefix_chest = "logistic-storage-tank-logistic-chest-"
 LogisticTank.suffixes = { "active-provider", "passive-provider", "storage", "buffer", "requester" }
-LogisticTank.suffixes_request = { "storage", "buffer", "requester" }
+LogisticTank.suffixes_filtered = { "storage", "buffer", "requester" }
 
 LogisticTank.chest_map = {}
 LogisticTank.filters = {}

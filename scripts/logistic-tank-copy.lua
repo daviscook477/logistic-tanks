@@ -18,6 +18,12 @@ function LogisticTankCopy.serialize(entity)
   local tags = {}
   tags.fluid_type = logistic_storage_tank.fluid_type
   tags.request_amount = logistic_storage_tank.request_amount
+
+  -- request from buffers is only available on actual requester tanks
+  if logistic_storage_tank.chest and logistic_storage_tank.chest.valid and logistic_storage_tank.main and logistic_storage_tank.main.valid and fns.table_contains(LogisticTankGUI.logistic_storage_tank_requester_names, logistic_storage_tank.main.name) then
+    tags.request_from_buffers = logistic_storage_tank.chest.request_from_buffers
+  end
+
   return tags
 end
 
@@ -40,11 +46,17 @@ function LogisticTankCopy.deserialize(entity, tags)
     logistic_storage_tank.request_amount = amount
   elseif fluid_box.name ~= tags.fluid_type then
     -- flying text
+    game.print({"logistic-tanks.cannot-switch-filter"})
   else
     -- filters are already the same - noop
     logistic_storage_tank.request_amount = amount
   end
   LogisticTank.update_request(logistic_storage_tank)
+
+  -- request from buffers is only available on actual requester tanks
+  if logistic_storage_tank.chest and logistic_storage_tank.chest.valid and fns.table_contains(LogisticTankGUI.logistic_storage_tank_requester_names, main.name) then
+    logistic_storage_tank.chest.request_from_buffers = tags.request_from_buffers or false
+  end
 end
 
 ---Handles copying settings between requester tanks
@@ -53,6 +65,13 @@ function LogisticTankCopy.on_entity_settings_pasted_self(event)
   if not fns.table_contains(LogisticTankGUI.logistic_storage_tank_request_names, event.source.name) then return end
   local tags = LogisticTankCopy.serialize(event.source)
   if tags then
+    local logistic_storage_tank = LogisticTank.from_entity(event.destination)
+    if not logistic_storage_tank then return end
+
+    -- perform an equalize in case fluid was already delivered to the internal logistic chest but wasn't reflected in the tank yet
+    -- we don't want to be able to set the filter to a different fluid if this has happened since that would cause us to lose fluid
+    LogisticTank.equalize_inventory(logistic_storage_tank)
+
     LogisticTankCopy.deserialize(event.destination, tags)
   end
 end
@@ -82,6 +101,11 @@ function LogisticTankCopy.on_entity_settings_pasted_assembling_machine(event)
   if not pastes[1] then return end
   local logistic_storage_tank = LogisticTank.from_entity(event.destination)
   if not logistic_storage_tank then return end
+
+  -- perform an equalize in case fluid was already delivered to the internal logistic chest but wasn't reflected in the tank yet
+  -- we don't want to be able to set the filter to a different fluid if this has happened since that would cause us to lose fluid
+  LogisticTank.equalize_inventory(logistic_storage_tank)
+
   local main = logistic_storage_tank.main
   if not (main and main.valid) then return LogisticTank.destroy(logistic_storage_tank) end
 

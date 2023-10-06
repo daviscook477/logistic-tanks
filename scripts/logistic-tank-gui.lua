@@ -3,14 +3,17 @@ LogisticTankGUI = {}
 LogisticTankGUI.name_gui_root = "logistic-storage-tank-filter"
 
 LogisticTankGUI.logistic_storage_tank_filtered_names = {}
-for _, suffix in pairs(LogisticTank.suffixes_request) do
+for _, suffix in pairs(LogisticTank.suffixes_filtered) do
   local logistic_storage_tank_name = LogisticTank.prefix_tank..suffix
   table.insert(LogisticTankGUI.logistic_storage_tank_filtered_names, logistic_storage_tank_name)
   local logistic_minibuffer_name = LogisticTank.prefix_minibuffer..suffix
   table.insert(LogisticTankGUI.logistic_storage_tank_filtered_names, logistic_minibuffer_name)
 end
 
-LogisticTankGUI.logistic_storage_tank_request_names = { LogisticTank.prefix_tank.."requester", LogisticTank.prefix_minibuffer.."requester" }
+-- tanks that can have requests copy/pasted
+LogisticTankGUI.logistic_storage_tank_request_names = { LogisticTank.prefix_tank.."requester", LogisticTank.prefix_minibuffer.."requester", LogisticTank.prefix_tank.."buffer", LogisticTank.prefix_minibuffer.."buffer" }
+-- tanks that have the request from buffers setting
+LogisticTankGUI.logistic_storage_tank_requester_names = { LogisticTank.prefix_tank.."requester", LogisticTank.prefix_minibuffer.."requester" }
 
 local fns = {}
 
@@ -123,7 +126,7 @@ function LogisticTankGUI.gui_open(player, logistic_storage_tank)
     sprite="utility/confirm_slot",
   }
 
-  if logistic_storage_tank.main and logistic_storage_tank.main.valid and fns.table_contains(LogisticTankGUI.logistic_storage_tank_request_names, logistic_storage_tank.main.name) and logistic_storage_tank.chest and logistic_storage_tank.chest.valid then
+  if logistic_storage_tank.main and logistic_storage_tank.main.valid and fns.table_contains(LogisticTankGUI.logistic_storage_tank_requester_names, logistic_storage_tank.main.name) and logistic_storage_tank.chest and logistic_storage_tank.chest.valid then
     local gui_flow_3 = gui_inner.add{type="flow", name="gui_flow_3", direction="horizontal", style = "horizontal_flow"}
     gui_flow_3.style.horizontally_stretchable = "on"
     gui_flow_3.style.vertical_align = "center"
@@ -186,7 +189,7 @@ function LogisticTankGUI.on_gui_click(event)
 
   if event.element.name == "logistic-storage-tank-confirm-button" then
     -- perform an equalize in case fluid was already delivered to the internal logistic chest but wasn't reflected in the tank yet
-    --  we don't want to be able to set the filter to a different fluid if this has happened since that would cause us to lose fluid
+    -- we don't want to be able to set the filter to a different fluid if this has happened since that would cause us to lose fluid
     LogisticTank.equalize_inventory(logistic_storage_tank)
 
     local amount = tonumber(root["gui_inner"]["gui_flow_2"]["logistic-storage-tank-textfield"].text)
