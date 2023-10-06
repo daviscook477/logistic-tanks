@@ -124,6 +124,7 @@ function LogisticTankGUI.gui_open(player, logistic_storage_tank)
     name="logistic-storage-tank-confirm-button",
     style="item_and_count_select_confirm",
     sprite="utility/confirm_slot",
+    tooltip={"gui.confirm"}
   }
 
   if logistic_storage_tank.main and logistic_storage_tank.main.valid and fns.table_contains(LogisticTankGUI.logistic_storage_tank_requester_names, logistic_storage_tank.main.name) and logistic_storage_tank.chest and logistic_storage_tank.chest.valid then
