@@ -3,6 +3,6 @@ Version: 0.0.1
 Date: ????
   Changes:
     - Initial beta release
-    - Adds logistic (passive provider and requester) variants of the storage tank and minibuffer
+    - Adds logistic variants of the storage tank and minibuffer
     - Adds barrels to the logistic robot recipe
     - Copy/paste between logistic storage tanks, logistic minibuffers, and assembly machines like logistic chests
