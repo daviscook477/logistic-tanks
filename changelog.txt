@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.1
-Date: ????
+Date: 2023-10-06
   Changes:
     - Initial beta release
     - Adds logistic variants of the storage tank and minibuffer
