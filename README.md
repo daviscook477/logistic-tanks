@@ -13,7 +13,6 @@ Connect storage tanks to the logistics network so robots can move fluids around 
     - The filter is set with a convenient side GUI when opening the tank GUI.
     - The filter may only be changed if the tank is empty - we don't want mixed fluid networks!
     - Requester tanks may be configured to request from buffer tanks as well.
-4. Storage tank that acts like a storage chest but must be filtered.
 4. Copy/paste requests from assembly machines onto requester/buffer tanks just like logistic chests.
 5. Circuit connections to the tanks read the contents of the tank.
     - The requests of a requester/buffer tank cannot be set using the circuit network. This is limited because we don't want mixed fluid networks.
@@ -25,11 +24,11 @@ Connect storage tanks to the logistics network so robots can move fluids around 
 
 ## Limitations
 1. The active provider tank is intentionally left unavailable by default. Due to the internal setup of this mod, an active provider tank could provide to a storage chest - which would break the mod's goal of keeping the fluids in the logistic network separate from the items in it. You may enable this in the mod settings if you are willing to have the fluids provided by the active provider tank stored in standard storage chests.
-    - To work around this limitation, rather than having high priority fluids be provided by active provider tanks, have high priority fluids be provided by storage tanks. Then use a requester tank where the fluid should be stored - it will prioritize pulling from storage tanks over passive provider tanks.
+    - To work around this limitation, rather than having high priority fluids be provided by active provider tanks, have high priority fluids be provided by buffer tanks. Then use a requester tank where the fluid should be stored - it will prioritize pulling from buffer tanks over passive provider tanks as long as request from buffer chests is ticked.
 2. Even with the above precaution it is still possible for a storage chest to have fluids inserted directly by logistic robots if the requester tank to which they are transporting fluids is destroyed while they are travelling. In most cases this will resolve itself when the requester tank is rebuilt and the fluid in the storage chest is prioritized over fluid in a passive provider tank due to the priority order of the logistic network.
 4. The amount of fluids in the logistic network read from a roboport with "read logistic network contents" enabled are not the typical fluid signals. They are special fluid in logistic network variants that are equivalent to 50 standard fluid units by default (the amount if equivalent to mod setting for "liquid per cargo slot"). They can be found in the virtual signals tab rather than the fluids tab. In order for these signals to be interactable in combinators, the logistic network item equivalents of each fluid are also choosable within the filters of requester, buffer, and storage chests. If you do not want to mix the fluids in the logistic network with the chests, do not select these filters.
 
 ## Credits
-1. [test447](https://mods.factorio.com/user/test447) - code, minibuffer mask, tech icon
+1. [test447](https://mods.factorio.com/user/test447) - code, minibuffer mask
 2. [Kirazy](https://mods.factorio.com/user/Kirazy) - storage tank mask
 3. [Anicha](https://mods.factorio.com/user/Anicha) - minibuffer dependency
