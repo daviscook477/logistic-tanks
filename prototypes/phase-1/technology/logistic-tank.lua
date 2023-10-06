@@ -45,20 +45,14 @@ data:extend({
     {
       -- Base
       {
-        icon = "__extra-storage-tank-minibuffer__/graphics/icons/icon-minibuffer.png",
-        icon_size = 144,
+        icon = "__logistic-tanks__/graphics/technology/minibuffer.png",
+        icon_size = 256,
       },
       -- Mask
       {
-        icon = "__logistic-tanks__/graphics/icons/logistic-minibuffer/icon-minibuffer-mask.png",
-        icon_size = 144,
-        tint = logistic_tanks.tint_logistic_minibuffer_passive_provider,
-      },
-      -- Highlights
-      {
-        icon = "__logistic-tanks__/graphics/icons/logistic-minibuffer/icon-minibuffer-highlights.png",
-        icon_size = 144,
-        tint = { 1, 1, 1, 0 }
+        icon = "__logistic-tanks__/graphics/technology/minibuffer-mask.png",
+        icon_size = 256,
+        tint = logistic_tanks.tint_logistic_storage_tank_requester,
       },
     },
     icon = "__logistic-tanks__/graphics/technology/logistic-storage-tank.png",
@@ -78,3 +72,7 @@ data:extend({
     order = "c-k-f"
   },
 })
+
+-- the minibuffer technology icon was rendered at a bad resolution so replace it with an upscaled and sharpened version
+data.raw.technology["minibuffer"].icon = "__logistic-tanks__/graphics/technology/minibuffer.png"
+data.raw.technology["minibuffer"].icon_size = 256

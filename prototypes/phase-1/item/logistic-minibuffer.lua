@@ -8,19 +8,19 @@ function fns.make_logistic_minibuffer_item(name, order, tint)
     {
       -- Base
       {
-        icon = "__extra-storage-tank-minibuffer__/graphics/icons/icon-minibuffer.png",
-        icon_size = 144,
+        icon = "__logistic-tanks__/graphics/icons/logistic-minibuffer/icon-minibuffer.png",
+        icon_size = 64,
       },
       -- Mask
       {
         icon = "__logistic-tanks__/graphics/icons/logistic-minibuffer/icon-minibuffer-mask.png",
-        icon_size = 144,
+        icon_size = 64,
         tint = tint,
       },
       -- Highlights
       {
         icon = "__logistic-tanks__/graphics/icons/logistic-minibuffer/icon-minibuffer-highlights.png",
-        icon_size = 144,
+        icon_size = 64,
         tint = { 1, 1, 1, 0 }
       },
     },
@@ -43,3 +43,7 @@ data:extend({
   fns.make_logistic_minibuffer_item("buffer", "d", logistic_tanks.tint_logistic_storage_tank_buffer),
   fns.make_logistic_minibuffer_item("requester", "e", logistic_tanks.tint_logistic_storage_tank_requester)
 })
+
+-- the minibuffer item icon was rendered at a bad resolution so replace it with a downscaled and sharpened version
+data.raw.item["minibuffer"].icon = "__logistic-tanks__/graphics/icons/logistic-minibuffer/icon-minibuffer.png"
+data.raw.item["minibuffer"].icon_size = 64
