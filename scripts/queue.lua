@@ -45,7 +45,9 @@ function Queue.pop_left (list)
 
   list.head = list.head.next
   first.next = nil
-  list.head.prev = nil
+  if list.head then
+    list.head.prev = nil
+  end
   list.size = list.size - 1
   return first.value
 end
@@ -60,7 +62,9 @@ function Queue.pop_right (list)
 
   list.tail = list.tail.prev
   last.prev = nil
-  list.tail.next = nil
+  if list.tail then
+    list.tail.next = nil
+  end
   list.size = list.size - 1
   return last.value
 end

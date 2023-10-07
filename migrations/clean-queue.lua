@@ -1,4 +1,5 @@
-if not global.logistic_storage_tanks_update_queue then return end
+if not global.logistic_storage_tanks then global.logistic_storage_tanks = {} end
+if not global.logistic_storage_tanks_update_queue then global.logistic_storage_tanks_update_queue = Queue.new() end
 
 local queue = global.logistic_storage_tanks_update_queue
 if queue.head then
