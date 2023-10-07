@@ -45,6 +45,7 @@ function Queue.pop_left (list)
 
   list.head = list.head.next
   first.next = nil
+  list.head.prev = nil
   list.size = list.size - 1
   return first.value
 end
@@ -59,6 +60,7 @@ function Queue.pop_right (list)
 
   list.tail = list.tail.prev
   last.prev = nil
+  list.tail.next = nil
   list.size = list.size - 1
   return last.value
 end
@@ -71,6 +73,8 @@ function Queue.remove (list, node)
   local before = node.prev
   local after = node.next
   list.size = list.size - 1
+  node.next = nil
+  node.prev = nil
   if before and after then
     before.next = after
     after.prev = before
