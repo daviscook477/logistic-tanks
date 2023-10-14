@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.0.2
-Date: ????
+Date: 2023-10-07
   Bugfixes:
     - Fixed the queue holding onto references to removed items preventing them from being garbage collected
 ---------------------------------------------------------------------------------------------------
