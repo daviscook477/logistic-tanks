@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.3
+Date: ????
+  Changes:
+    - The flush button for the requester tank now flushes the fluid system rather than just the tank - the tooltip has been updated to reflect this
+    - Copy/paste from an assembly machine with multiple fluid inputs will now select the fluid type connected to the requester tank rather than always the first fluid input defined on the recipe
+---------------------------------------------------------------------------------------------------
 Version: 0.0.2
 Date: 2023-10-07
   Bugfixes:
