@@ -76,6 +76,48 @@ function LogisticTankCopy.on_entity_settings_pasted_self(event)
   end
 end
 
+---Finds the fluid that the fluid system that contains the given fluidbox would be considered filtered to by the game
+---@param fluid_boxes LuaFluidBox
+---@param index number
+function LogisticTankCopy.find_fluid_system_filter(fluid_boxes, index)
+  -- there's no way this implementation is efficient but I'd rather have something correct than not
+  -- do it at all because doing this efficiently and correctly is too complicated to be worth it
+  -- for the most part this will be handling the case of a requster tank placed nearly immediately next to
+  -- the fluid input of the assembler so the slowness will in general not be noticeable
+  local target_fluid_system_id = fluid_boxes.get_fluid_system_id(index)
+  if not target_fluid_system_id then return end
+  local seen_unit_numbers = {}
+  local queued_fluid_boxes = Queue.new()
+  Queue.push_right(queued_fluid_boxes, fluid_boxes)
+  while not Queue.is_empty(queued_fluid_boxes) do
+    local curr = Queue.pop_left(queued_fluid_boxes)
+    if curr and curr.valid then
+      local curr_owner = curr.owner
+      if curr_owner and curr_owner.valid and not seen_unit_numbers[curr_owner.unit_number] then
+        seen_unit_numbers[curr_owner.unit_number] = true
+        local count = #curr
+        -- look at all the boxes on this entity and only consider ones in the same fluid system
+        for i=1,count do
+          if curr.get_fluid_system_id(i) == target_fluid_system_id then
+            -- if the fluid system matches, return the locked fluid or filter if present
+            local locked_fluid = curr.get_locked_fluid(i)
+            if locked_fluid then return locked_fluid end
+            local filter = curr.get_filter(i)
+            if filter then return filter.name end
+            -- otherwise append all the connected fluidboxes to the end of the queue
+            local connections = curr.get_connections(i)
+            for _, connection in pairs(connections) do
+              Queue.push_right(queued_fluid_boxes, connection)
+            end
+          end
+        end
+      end
+    end
+  end
+  -- the entire fluid system was searched and no filter or locked fluid is present anywhere so we cannot determine a filter
+  return nil
+end
+
 ---Handles copying settings between requester tanks and assembly machines
 ---@param event EventData.on_entity_settings_pasted Event data
 function LogisticTankCopy.on_entity_settings_pasted_assembling_machine(event)
@@ -110,18 +152,40 @@ function LogisticTankCopy.on_entity_settings_pasted_assembling_machine(event)
   if not (main and main.valid) then return LogisticTank.destroy(logistic_storage_tank) end
 
   -- clamp the request at maximum by the capacity of the requester tank
-  local amount = pastes[1].paste_amount
-  amount = math.min(amount, game.entity_prototypes[event.destination.name].fluid_capacity)
-
-  -- clamp the request at minimum by 1
-  amount = math.max(amount, 1)
 
   local fluid_boxes = main.fluidbox
   local fluid_box = fluid_boxes[1]
+  local expected_filter = LogisticTankCopy.find_fluid_system_filter(fluid_boxes, 1)
+
+  -- if the connected fluid system has no expected filter we default to the first fluid in the recipe inputs
+  local actual_filter = nil
+  local amount = 0
+  if not expected_filter then
+    actual_filter = pastes[1].paste_type
+    amount = pastes[1].paste_amount
+  else
+    -- only use the expected filter if it is in the recipe inputs
+    for _, paste in pairs(pastes) do
+      if expected_filter == paste.paste_type then
+        actual_filter = paste.paste_type
+        amount = paste.paste_amount
+      end
+    end
+    -- let the player know the expected filter was not in the recipe inputs
+    if actual_filter == nil then
+      LogisticTank.update_request(logistic_storage_tank)
+      return game.print({"logistic-tanks.fluid-recipe-paste-mismatch", {"fluid-name."..expected_filter}})
+    end
+  end
+
+  amount = math.min(amount, game.entity_prototypes[event.destination.name].fluid_capacity)
+  -- clamp the request at minimum by 1
+  amount = math.max(amount, 1)
+
   if not fluid_box then
-    logistic_storage_tank.fluid_type = pastes[1].paste_type
+    logistic_storage_tank.fluid_type = actual_filter
     logistic_storage_tank.request_amount = amount
-  elseif fluid_box.name ~= pastes[1].paste_type then
+  elseif fluid_box.name ~= actual_filter then
     -- flying text
     game.print({"logistic-tanks.cannot-switch-filter"})
   else
