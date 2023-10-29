@@ -212,7 +212,7 @@ function LogisticTankGUI.on_gui_click(event)
     local fluid_boxes = main.fluidbox
     local fluid_box = fluid_boxes[1]
     if fluid_box then
-      fluid_boxes.flush(1)
+      fluid_boxes[1] = nil
     end
     local chest = logistic_storage_tank.chest
     if chest and chest.valid then
@@ -223,7 +223,6 @@ function LogisticTankGUI.on_gui_click(event)
     logistic_storage_tank.request_amount = 0
     LogisticTank.update_request(logistic_storage_tank)
     LogisticTankGUI.gui_update(player)
-    -- find all logistic tank fluid boxes connected to this one, and perform a full flush of them too
   end
 end
 script.on_event(defines.events.on_gui_click, LogisticTankGUI.on_gui_click)
