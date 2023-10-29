@@ -14,6 +14,7 @@ Connect storage tanks to the logistics network so robots can move fluids around 
     - The filter may only be changed if the tank is empty - we don't want mixed fluid networks!
     - Requester tanks may be configured to request from buffer tanks as well.
 4. Copy/paste requests from assembly machines onto requester/buffer tanks just like logistic chests.
+    - When copy/pasting from an assembly machine set to a recipe with multiple fluid inputs, if the requester/buffer tank is connected by pipes to the input port on the assembling machine, the pasted request will choose the fluid on the input port.
 5. Circuit connections to the tanks read the contents of the tank.
     - The requests of a requester/buffer tank cannot be set using the circuit network. This is limited because we don't want mixed fluid networks.
 6. The amount of fluid in the logistic network can be read from roboports - be careful as these are virtual signals not the typical fluid signal - find them in the virtual signal tab in combinator interfaces not in the fluid tab! - and are equivalent to 1/50th (w/ default settings) the actual amount of fluid stored.
